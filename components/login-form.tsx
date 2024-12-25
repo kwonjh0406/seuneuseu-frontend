@@ -1,3 +1,5 @@
+'use client';
+
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -8,11 +10,13 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import Link from "next/link";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -46,9 +50,11 @@ export function LoginForm({
               <Button type="submit" className="w-full">
                 로그인
               </Button>
-              <Button variant="outline" className="w-full">
-                Google 계정으로 계속하기
-              </Button>
+              <Link href="http://localhost:8080/oauth2/authorization/google" passHref>
+                <Button variant="outline" className="w-full">
+                  Google 계정으로 계속하기
+                </Button>
+              </Link>
             </div>
             <div className="mt-4 text-center text-sm">
               Don&apos;t have an account?{" "}

@@ -1,101 +1,95 @@
-import Image from "next/image";
+'use client';
+
+import { Sidebar } from "@/components/sidebar"
+import { Post } from "@/components/post"
+import { Button } from "@/components/ui/button"
+import { useEffect, useState } from "react";
+import axios from "axios";
+
+const posts = [
+  {
+    username: "thepoetnotarockstar",
+    avatar: "/placeholder.svg",
+    timeAgo: "15h",
+    content: `"When I was a Beatle I thought we were the best fucking group in the world, and believing that is what made us what we were."
+
+— John Lennon`,
+    image: "/placeholder.svg?height=400&width=600",
+    likes: 13,
+    replies: 2,
+    reposts: 1
+  },
+  {
+    username: "ayodebaba",
+    avatar: "/placeholder.svg",
+    timeAgo: "15h",
+    content: "One thing I have learnt in this life is embracing my flaws. Those who remain in my life choose me genuinely because my flaws have no value to them.",
+    likes: 3,
+    replies: 0,
+    reposts: 1
+  },
+  {
+    username: "kristinmallison",
+    avatar: "/placeholder.svg",
+    timeAgo: "10h",
+    content: "Working on another sparkly mini dress ✨⭐️",
+    image: "/placeholder.svg?height=400&width=600",
+    likes: 5,
+    replies: 1,
+    reposts: 0
+  }
+]
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // ✅ 세션 확인
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/api/session", {
+          withCredentials: true, // 쿠키 전송
+        });
+        setIsLoggedIn(response.data.isLoggedIn);
+      } catch (error) {
+        console.error("세션 확인 실패:", error);
+        setIsLoggedIn(false);
+      }
+    };
+
+    checkSession();
+  }, []);
+
+  return (
+    <div className="flex min-h-screen bg-background">
+      <Sidebar />
+      <main className="flex-1 md:ml-[72px] lg:ml-[245px] mb-16 md:mb-0">
+        <header className="sticky top-0 z-40 flex items-center justify-between px-4 h-14 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+          <h1 className="text-xl font-semibold">홈</h1>
+          {isLoggedIn ? (
+            <Button variant="outline" size="sm" className="h-8 px-4">
+              Log out
+            </Button>
+          ) : (
+            <Button variant="outline" size="sm" className="h-8 px-4">
+              Log in
+            </Button>
+          )}
+        </header>
+        <div className="max-w-[640px] mx-auto">
+          <div className="divide-y">
+            {posts.map((post, index) => (
+              <Post 
+                key={index} 
+                {...post} 
+                isLast={index === posts.length - 1}
+              />
+            ))}
+          </div>
         </div>
       </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
     </div>
-  );
+  )
 }
+

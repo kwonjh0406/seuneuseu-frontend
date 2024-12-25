@@ -1,3 +1,8 @@
+/**
+ * 완성
+ * https://ui.shadcn.com/blocks/login
+ */
+
 import { LoginForm } from "@/components/login-form"
 
 export default function Page() {
