@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
-import { useRouter } from "next/navigation"
+import { useParams, useRouter, useSearchParams } from "next/navigation"
 import { Sidebar } from "@/components/sidebar"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
@@ -34,11 +34,30 @@ export default function CreatePage() {
     checkSession();
   }, []);
 
+  const { postId } = useParams();
+
   const router = useRouter()
   const [content, setContent] = useState("")
   const [imageUrls, setImageUrls] = useState<string[]>([])
   const fileInputRef = useRef<HTMLInputElement>(null)
   const maxLength = 500
+
+  useEffect(() => {
+    const fetchPostData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/api/post/edit/${postId}`, {
+          withCredentials: true,
+        })
+        const { content, images } = response.data.data
+        setContent(content || "")
+        setImageUrls(images || [])
+      } catch (error) {
+        console.error("Failed to fetch post data:", error)
+      }
+    }
+
+    fetchPostData()
+  }, [postId])
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
@@ -48,68 +67,12 @@ export default function CreatePage() {
     }
   }
 
-  const removeImage = (index: number) => {
-    setImageUrls(prev => prev.filter((_, i) => i !== index))
-  }
-
-  // const handleSubmit = async (e: React.FormEvent) => {
-  //   e.preventDefault()
-  //   try {
-  //     const response = await axios.post(
-  //       "http://localhost:8080/api/post", // 실제 게시글 작성 API 엔드포인트
-  //       { content },
-  //       {
-  //         withCredentials: true, // 쿠키를 포함하여 인증 정보를 전송
-  //         headers: {
-  //           "Content-Type": "application/json", // JSON 데이터로 전송
-  //         },
-  //       }
-  //     );
-
-  //     // 성공적으로 게시글이 작성된 경우
-  //     alert(response.data.message);  // 응답 메시지
-  //   } catch (error) {
-  //     // 에러 처리
-  //     console.error("게시글 작성 실패:", error);
-  //     alert("게시글 작성에 실패했습니다.");
-  //   }
-  //   router.push("/")
-  // }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-  
-    try {
-      const formData = new FormData();
-      formData.append("content", content); // 텍스트 데이터 추가
-  
-      // 파일 추가
-      if (fileInputRef.current?.files) {
-        Array.from(fileInputRef.current.files).forEach((file) => {
-          formData.append("images", file); // 다중 이미지 업로드
-        });
-      }
-  
-      const response = await axios.post(
-        "http://localhost:8080/api/post",
-        formData,
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "multipart/form-data", // Multipart 전송
-          },
-        }
-      );
-  
-      alert(response.data.message);
-      router.push("/");
-    } catch (error) {
-      console.error("게시글 작성 실패:", error);
-      alert("게시글 작성에 실패했습니다.");
-    }
-  };
-  
-  
+    e.preventDefault()
+
+    router.push("/")
+  }
 
   return (
 
@@ -117,12 +80,12 @@ export default function CreatePage() {
       <Sidebar username="asdf" />
       <main className="flex-1 md:ml-[72px] lg:ml-[245px] mb-16 md:mb-0">
         <header className="sticky top-0 z-40 flex items-center justify-between px-4 h-14 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-          <h1 className="text-xl font-semibold">새 게시물</h1>
+          <h1 className="text-xl font-semibold">게시글 수정</h1>
           <Button
             disabled={!content.trim() && imageUrls.length === 0}
             onClick={handleSubmit}
           >
-            게시
+            수정
           </Button>
         </header>
 
@@ -142,27 +105,11 @@ export default function CreatePage() {
                   maxLength={maxLength}
                 />
                 {imageUrls.length > 0 && (
-                  <ImageCarousel images={imageUrls} onRemove={removeImage} />
+                  <ImageCarousel images={imageUrls}/>
                 )}
                 <div className="flex items-center justify-between pt-4 border-t">
                   <div className="flex items-center space-x-2">
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      accept="image/*"
-                      multiple
-                      className="hidden"
-                      onChange={handleImageUpload}
-                    />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      className="text-primary"
-                      onClick={() => fileInputRef.current?.click()}
-                    >
-                      <ImageIcon className="h-5 w-5" />
-                    </Button>
+                    
                     {content.length > maxLength * 0.8 && (
                       <div className="flex items-center text-amber-500 text-sm">
                         <AlertCircle className="h-4 w-4 mr-1" />
