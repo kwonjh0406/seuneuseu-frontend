@@ -115,7 +115,7 @@ export default function PostPage() {
         </header>
 
         <div className="max-w-[640px] mx-auto px-4 py-6 bg-background/80 backdrop-blur-sm">
-          <Post {...mockPost} />
+          {/* <Post {...mockPost} /> */}
 
           <div className="my-6 border-t border-border" />
 
@@ -144,13 +144,13 @@ export default function PostPage() {
             </form>
 
             <div className="space-y-6">
-              {comments.map((comment) => (
+              {/* {comments.map((comment) => (
                 <Comment 
                   key={comment.id} 
                   {...comment} 
                   onReply={handleReply}
                 />
-              ))}
+              ))} */}
             </div>
           </div>
         </div>
