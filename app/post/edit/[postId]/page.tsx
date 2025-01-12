@@ -18,7 +18,7 @@ export default function CreatePage() {
   useEffect(() => {
     const checkSession = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/api/session/username", {
+        const response = await axios.get("/api/session/username", {
           withCredentials: true,
         });
         if (response.data.username == null) {
@@ -45,7 +45,7 @@ export default function CreatePage() {
   useEffect(() => {
     const fetchPostData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/api/post/edit/${postId}`, {
+        const response = await axios.get(`/api/post/edit/${postId}`, {
           withCredentials: true,
         })
         const { content, images } = response.data.data

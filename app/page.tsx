@@ -28,7 +28,7 @@ export default function Home() {
   useEffect(() => {
     const checkSession = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/api/session/username", {
+        const response = await axios.get("/api/session/username", {
           withCredentials: true,
         });
         setLoggedInUsername(response.data.username);
@@ -43,7 +43,7 @@ export default function Home() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/api/posts", {
+        const response = await axios.get("/api/posts", {
           withCredentials: true,
         });
         setPosts(response.data); // PostResponseDto의 배열
@@ -68,7 +68,7 @@ export default function Home() {
         <header className="sticky top-0 z-40 flex items-center justify-between px-4 h-14 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <h1 className="text-xl font-semibold">홈</h1>
           {loggedInUsername ? (
-            <Link href="http://localhost:8080/logout" passHref>
+            <Link href="/logout" passHref>
               <Button size="sm" className="h-8 px-4">로그아웃</Button>
             </Link>
           ) : (

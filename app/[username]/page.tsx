@@ -32,7 +32,7 @@ export default function ProfilePage() {
   useEffect(() => {
     const checkSession = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/api/session/username", {
+        const response = await axios.get("/api/session/username", {
           withCredentials: true,
         });
         setLoggedInUsername(response.data.username);
@@ -46,7 +46,7 @@ export default function ProfilePage() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/api/user/profile/${username}`, {
+        const response = await axios.get(`/api/user/profile/${username}`, {
           withCredentials: true,
         });
         setUserProfile(response.data);
@@ -64,7 +64,7 @@ export default function ProfilePage() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/api/posts/username?username=${username}`, {
+        const response = await axios.get(`/api/posts/username?username=${username}`, {
           withCredentials: true,
         });
         setPosts(response.data); // 게시물 배열
@@ -87,7 +87,7 @@ export default function ProfilePage() {
             <h1 className="text-xl font-semibold">{'@' + userProfile?.username || "Unknown User"}</h1>
           </div>
           {loggedInUsername ? (
-            <Link href="http://localhost:8080/logout" passHref>
+            <Link href="/logout" passHref>
               <Button size="sm" className="h-8 px-4">로그아웃</Button>
             </Link>
           ) : (

@@ -39,7 +39,7 @@ export function Post({
 
   const handleDelete = async () => {
     try {
-      const response = await axios.delete(`http://localhost:8080/api/post/delete/${postId}`, {
+      const response = await axios.delete(`/api/post/delete/${postId}`, {
         withCredentials: true,
       });
       if (response.status === 204) {
