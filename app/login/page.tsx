@@ -28,7 +28,7 @@ export default function LoginPage() {
         </div>
 
         <div className="space-y-4">
-          <Link href="http://localhost:8080/oauth2/authorization/google" passHref>
+          <Link href="https://seuneuseu.com:8080/oauth2/authorization/google" passHref>
             <Button className="w-full py-6 text-base bg-[#101010] text-white hover:bg-[#2b2b2b] rounded-xl font-semibold">
               Google 계정으로 계속하기
             </Button>
