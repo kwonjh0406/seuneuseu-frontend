@@ -4,6 +4,13 @@ import Link from 'next/link'
 import { Button } from "@/components/ui/button"
 
 export default function LoginPage() {
+  
+  const handleGoogleLogin = () => {
+    window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL}/oauth2/authorization/google`;
+  };
+
+  
+
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-[350px] space-y-8">
