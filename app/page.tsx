@@ -28,7 +28,7 @@ export default function Home() {
   useEffect(() => {
     const checkSession = async () => {
       try {
-        const response = await axios.get("/api/session/username", {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/session/username`, {
           withCredentials: true,
         });
         setLoggedInUsername(response.data.username);
@@ -43,7 +43,7 @@ export default function Home() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get("/api/posts", {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts`, {
           withCredentials: true,
         });
         setPosts(response.data); // PostResponseDto의 배열

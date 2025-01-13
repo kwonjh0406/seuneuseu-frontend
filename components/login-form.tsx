@@ -50,7 +50,7 @@ export function LoginForm({
               <Button type="submit" className="w-full">
                 로그인
               </Button>
-              <Link href="/oauth2/authorization/google" passHref>
+              <Link href={`${process.env.NEXT_PUBLIC_API_BASE_URL}/oauth2/authorization/google`} passHref>
                 <Button variant="outline" className="w-full">
                   Google 계정으로 계속하기
                 </Button>

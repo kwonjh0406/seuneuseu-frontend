@@ -40,7 +40,7 @@ export default function SetupProfilePage() {
   
     try {
       // 백엔드 API에 데이터 전송
-      const response = await fetch('/api/welcome-profile-setup', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/welcome-profile-setup`, {
         credentials: 'include', //시발
         method: 'POST',
         body: formData,

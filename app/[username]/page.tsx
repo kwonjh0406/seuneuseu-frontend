@@ -46,7 +46,7 @@ export default function ProfilePage() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await axios.get(`/api/user/profile/${username}`, {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/profile/${username}`, {
           withCredentials: true,
         });
         setUserProfile(response.data);
@@ -64,7 +64,7 @@ export default function ProfilePage() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get(`/api/posts/username?username=${username}`, {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/username?username=${username}`, {
           withCredentials: true,
         });
         setPosts(response.data); // 게시물 배열

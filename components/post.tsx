@@ -39,7 +39,7 @@ export function Post({
 
   const handleDelete = async () => {
     try {
-      const response = await axios.delete(`/api/post/delete/${postId}`, {
+      const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/post/delete/${postId}`, {
         withCredentials: true,
       });
       if (response.status === 204) {

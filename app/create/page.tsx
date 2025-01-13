@@ -18,7 +18,7 @@ export default function CreatePage() {
   useEffect(() => {
     const checkSession = async () => {
       try {
-        const response = await axios.get("/api/session/username", {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/session/username`, {
           withCredentials: true,
         });
         if (response.data.username == null) {
@@ -91,7 +91,7 @@ export default function CreatePage() {
       }
   
       const response = await axios.post(
-        "/api/post",
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/post`,
         formData,
         {
           withCredentials: true,
