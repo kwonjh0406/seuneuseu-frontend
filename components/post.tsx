@@ -35,8 +35,6 @@ export function Post({
   isLast
 }: PostProps) {
 
-  console.log("Images:", imageUrls);
-
   const handleDelete = async () => {
     try {
       const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/post/delete/${postId}`, {

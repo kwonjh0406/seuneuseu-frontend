@@ -32,6 +32,7 @@ export default function Home() {
           withCredentials: true,
         });
         setLoggedInUsername(response.data.username);
+        console.log(response.data.username);
       } catch (error) {
         setLoggedInUsername(null);
       }
