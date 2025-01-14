@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { ImageIcon, Camera } from 'lucide-react'
+import axios from "axios"
 
 export default function SetupProfilePage() {
   const router = useRouter()
@@ -25,37 +26,38 @@ export default function SetupProfilePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-  
+
     // FormData 객체 생성
     const formData = new FormData()
-  
+
     // 사용자 이름과 이름을 FormData에 추가
     formData.append('username', username)
     formData.append('name', name)
-  
+
     // 이미지 파일이 존재하면 FormData에 이미지 파일을 추가
     if (fileInputRef.current?.files?.[0]) {
       formData.append('profileImage', fileInputRef.current.files[0])
     }
-  
+
     try {
-      // 백엔드 API에 데이터 전송
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/welcome-profile-setup`, {
-        credentials: 'include', //시발
-        method: 'POST',
-        body: formData,
-      })
- 
-      const responseData = await response.json();
-  
-      if (responseData.success) {
-        router.push('/')
-      } else {
-        // 서버에서 에러가 발생했을 경우
-        console.error(responseData.message)
-      }
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/welcome-profile-setup`,
+        formData,
+        {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+      router.push('/');
+
     } catch (error) {
-      console.error('Error submitting profile:', error)
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          alert(error.response.data.message || "오류가 발생했습니다.");
+        }
+      }
     }
   }
 
@@ -99,7 +101,7 @@ export default function SetupProfilePage() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="username">사용자 이름</Label>
+            <Label htmlFor="username">사용자 아이디</Label>
             <Input
               id="username"
               value={username}
@@ -115,7 +117,7 @@ export default function SetupProfilePage() {
               id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="이름을 입력하세요"
+              placeholder="한글과 영어만 입력 가능"
               required
             />
           </div>

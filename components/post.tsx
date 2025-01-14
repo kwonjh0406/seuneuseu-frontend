@@ -1,4 +1,3 @@
-import Image from "next/image"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Heart, MessageCircle, Repeat2, MoreHorizontal } from 'lucide-react'
 import { Button } from "@/components/ui/button"
@@ -99,7 +98,7 @@ export function Post({
           )}
         </div>
 
-        <p className="mt-0.5 text-[0.9375rem] overflow-wrap break-word word-break break-all">
+        <p className="mt-0.5 text-[0.9375rem] break-all whitespace-pre-wrap">
           {content}
         </p>
 
