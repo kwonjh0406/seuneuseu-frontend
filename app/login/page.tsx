@@ -1,3 +1,7 @@
+/**
+ * 로그인 페이지(완성)
+ */
+
 'use client'
 
 import Link from 'next/link'
@@ -12,8 +16,8 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-[350px] space-y-8">
-
         <div className="text-center space-y-4">
+
           <div className="flex justify-center">
             <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
               width="200" height="200" viewBox="0 0 500.000000 500.000000">
@@ -26,12 +30,15 @@ export default function LoginPage() {
           </div>
 
           <h1 className="text-5xl font-bold text-gray-900">스느스</h1>
+
           <p className="text-sm text-gray-600">
             새로운 소통의 시작, 여러분의 생각을 공유하세요
           </p>
+
         </div>
 
         <div className="space-y-4">
+
           <Button onClick={handleGoogleLogin} className="w-full py-6 text-base bg-[#101010] text-white hover:bg-[#2b2b2b] rounded-xl font-semibold">
             Google 계정으로 계속하기
           </Button>
@@ -41,6 +48,7 @@ export default function LoginPage() {
               로그인하지 않고 둘러보기
             </Link>
           </div>
+
         </div>
       </div>
     </div>

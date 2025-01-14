@@ -32,10 +32,7 @@ export default function Home() {
           withCredentials: true,
         });
         setLoggedInUsername(response.data.username);
-        console.log(response.data.username);
-      } catch (error) {
-        setLoggedInUsername(null);
-      }
+      } catch (error) { }
     };
     checkSession();
   }, []);
@@ -47,15 +44,11 @@ export default function Home() {
         const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts`, {
           withCredentials: true,
         });
-        setPosts(response.data); // PostResponseDto의 배열
-      } catch (error) {
-        console.error("게시글 가져오기 실패:", error);
-      }
+        setPosts(response.data);
+      } catch (error) { }
     };
-
-    fetchPosts(); // 게시글 가져오기
+    fetchPosts();
   }, []);
-
 
   return (
     <div className="flex min-h-screen bg-background">
