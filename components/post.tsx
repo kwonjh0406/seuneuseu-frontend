@@ -53,6 +53,7 @@ export function Post({
   return (
 
     <div className="relative flex gap-4 px-6 py-4 bg-card group hover:bg-accent/5 transition-colors">
+      {/* <div className="relative flex gap-4 px-6 py-4 bg-card group hover:bg-accent/5 transition-colors max-w-full overflow-x-auto"> */}
       {/* Avatar column with connecting line */}
 
       <div className="relative flex flex-col items-center">
@@ -96,11 +97,11 @@ export function Post({
               </PopoverContent>
             </Popover>
           )}
-
-
         </div>
 
-        <p className="mt-0.5 text-[0.9375rem] whitespace-pre-wrap break-words">{content}</p>
+        <p className="mt-0.5 text-[0.9375rem] overflow-wrap break-word word-break break-all">
+          {content}
+        </p>
 
         {imageUrls && imageUrls.length > 0 && (
           <div className="mt-3">
