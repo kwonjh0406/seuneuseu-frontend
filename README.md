@@ -1,4 +1,4 @@
-Next.js + TypeScript
+# Issues
+- 로그인을 하자마자 로그인이 해제되는 문제
+  - 한참을 헤맸다. 보니까 로그아웃 버튼에 Link 속성을 줬는데 이게 prefetching이라는 Next.js의 기능이 미리 다음 이동 경로의 리소스를 불러오기 위해 요청을 넣는 거 같은데, 저 프리패칭이 백엔드에 로그아웃 요청을 보내고 있던 것이었다. prefetch = {false} 옵션으로 해결.
 
-# AWS EC2
-pm2 start npm --name "nextjs-app" -- start
