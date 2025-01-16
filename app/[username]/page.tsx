@@ -87,12 +87,12 @@ export default function ProfilePage() {
             <h1 className="text-xl font-semibold">{'@' + userProfile?.username || "Unknown User"}</h1>
           </div>
           {loggedInUsername ? (
-            <Link href="/logout" passHref>
-              <Button size="sm" className="h-8 px-4">로그아웃</Button>
+            <Link href="/logout" prefetch={false} passHref>
+              <Button>로그아웃</Button>
             </Link>
           ) : (
             <Link href="/login" passHref>
-              <Button size="sm" className="h-8 px-4">로그인</Button>
+              <Button>로그인</Button>
             </Link>
           )}
         </header>

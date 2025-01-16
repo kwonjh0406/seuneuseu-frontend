@@ -5,6 +5,8 @@ import { Sidebar } from "@/components/sidebar"
 import { NotificationItem } from "@/components/notification-item"
 import axios from "axios"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
 
 // Mock data for demonstration
 const mockNotifications = [
@@ -46,20 +48,20 @@ export default function NotificationsPage() {
 
     useEffect(() => {
         const checkSession = async () => {
-          try {
-            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/session/username`, {
-              withCredentials: true,
-            });
-            if (response.data.username == null) {
-              router.push("/login");
-            }
-            else {
-              setLoggedInUsername(response.data.username);
-            }
-          } catch (error) { }
+            try {
+                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/session/username`, {
+                    withCredentials: true,
+                });
+                if (response.data.username == null) {
+                    router.push("/login");
+                }
+                else {
+                    setLoggedInUsername(response.data.username);
+                }
+            } catch (error) { }
         };
         checkSession();
-      }, []);
+    }, []);
 
     const handleReadNotification = (id: string) => {
         setNotifications(prevNotifications =>
@@ -75,6 +77,15 @@ export default function NotificationsPage() {
             <main className="flex-1 md:ml-[72px] lg:ml-[245px] mb-16 md:mb-0">
                 <header className="sticky top-0 z-40 flex items-center justify-between px-4 h-14 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
                     <h1 className="text-xl font-semibold">알림</h1>
+                    {loggedInUsername ? (
+                        <Link href="/logout" prefetch={false} passHref>
+                            <Button>로그아웃</Button>
+                        </Link>
+                    ) : (
+                        <Link href="/login" passHref>
+                            <Button>로그인</Button>
+                        </Link>
+                    )}
                 </header>
 
                 <div className="max-w-[640px] mx-auto">

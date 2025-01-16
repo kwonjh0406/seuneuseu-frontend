@@ -6,6 +6,8 @@ import { Sidebar } from "@/components/sidebar"
 import { UserSearchResult } from "@/components/user-search-result"
 import { Input } from "@/components/ui/input"
 import { Search } from 'lucide-react'
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
 
 // 사용자가 반환할 데이터 타입 정의
 interface SearchUserResponse {
@@ -76,6 +78,15 @@ export default function SearchPage() {
       <main className="flex-1 md:ml-[72px] lg:ml-[245px] mb-16 md:mb-0">
         <header className="sticky top-0 z-40 flex items-center justify-between px-4 h-14 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <h1 className="text-xl font-semibold">검색</h1>
+          {loggedInUsername ? (
+            <Link href="/logout" prefetch={false} passHref>
+              <Button>로그아웃</Button>
+            </Link>
+          ) : (
+            <Link href="/login" passHref>
+              <Button>로그인</Button>
+            </Link>
+          )}
         </header>
 
         <div className="max-w-[640px] mx-auto px-4 py-6">
