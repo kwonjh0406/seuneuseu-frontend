@@ -62,7 +62,7 @@ export default function Home() {
         <header className="sticky top-0 z-40 flex items-center justify-between px-4 h-14 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <h1 className="text-xl font-semibold">홈</h1>
           {loggedInUsername ? (
-            <Link href="/logout" passHref>
+            <Link href="/logout" prefetch={false} passHref>
               <Button>로그아웃</Button>
             </Link>
           ) : (
