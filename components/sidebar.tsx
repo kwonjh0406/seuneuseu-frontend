@@ -26,12 +26,12 @@ export function Sidebar({ username }: SidebarProps) {
     },
     {
       icon: PlusSquare,
-      href: username ? `/${username}` : "/create",
+      href: username ? "/create" : "/login",
       label: "새 게시물"
     },
     {
       icon: Heart,
-      href: username ? `/${username}` : "/notification",
+      href: username ? "/notification" : "/login",
       label: "알림"
     },
     {
