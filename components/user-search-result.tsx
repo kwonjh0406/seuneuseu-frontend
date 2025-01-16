@@ -1,46 +1,40 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
+import Link from "next/link"
 
 interface UserSearchResultProps {
   username: string
   name: string
-  avatar: string
+  profileImageUrl: string
   bio: string
-  isFollowing: boolean
-  onFollow: () => void
 }
 
 export function UserSearchResult({
   username,
   name,
-  avatar,
+  profileImageUrl,
   bio,
-  isFollowing,
-  onFollow
 }: UserSearchResultProps) {
   return (
-    <div className="flex items-center gap-4 py-4">
-      <Avatar className="h-12 w-12">
-        <AvatarImage src={avatar} alt={name} />
-        <AvatarFallback>{name[0]}</AvatarFallback>
-      </Avatar>
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="font-semibold text-sm">{name}</h3>
-            <p className="text-sm text-muted-foreground">@{username}</p>
+    <Link href={`/${username}`}>
+      <div className="flex items-center gap-4 py-4">
+        <Avatar className="h-12 w-12">
+          <AvatarImage src={profileImageUrl} />
+          <AvatarFallback>
+            <img src="https://www.gravatar.com/avatar/?d=mp" />
+          </AvatarFallback>
+
+        </Avatar>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="font-semibold text-sm">{name}</h3>
+              <p className="text-sm text-muted-foreground">@{username}</p>
+            </div>
           </div>
-          <Button
-            variant={isFollowing ? "outline" : "default"}
-            size="sm"
-            onClick={onFollow}
-          >
-            {isFollowing ? 'Following' : 'Follow'}
-          </Button>
+          <p className="text-sm mt-1 truncate">{bio}</p>
         </div>
-        <p className="text-sm mt-1 truncate">{bio}</p>
       </div>
-    </div>
+    </Link>
   )
 }
 
