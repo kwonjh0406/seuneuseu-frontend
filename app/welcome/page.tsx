@@ -8,35 +8,83 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { ImageIcon, Camera } from 'lucide-react'
 import axios from "axios"
+import { heicTo } from 'heic-to'
+import imageCompression from 'browser-image-compression'
 
 export default function SetupProfilePage() {
   const router = useRouter()
   const [username, setUsername] = useState("")
   const [name, setName] = useState("")
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
+  const [processedImage, setProcessedImage] = useState<File | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const processImage = async (file: File) => {
+    try {
+      // HEIC 파일인 경우 JPG로 변환
+      let processedFile = file
+      const originalFileName = file.name // 원본 파일명 저장
+      
+      if (file.type === "image/heic" || file.type === "image/heif") {
+        const blob = await heicTo({
+          blob: file,
+          type: "image/jpeg",
+        })
+        processedFile = new File([blob], originalFileName.replace(/\.(heic|heif)$/i, '.jpg'), {
+          type: 'image/jpeg'
+        })
+      }
+  
+      // 이미지 압축 옵션
+      const options = {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true,
+        fileType: 'image/jpeg'
+      }
+  
+      // 이미지 압축 실행
+      const compressedBlob = await imageCompression(processedFile, options)
+      
+      // 압축된 파일에도 원본 파일명 유지 (HEIC였다면 .jpg로 변환된 파일명)
+      const finalFile = new File(
+        [compressedBlob], 
+        processedFile.name,
+        { type: 'image/jpeg' }
+      )
+      
+      return finalFile
+    } catch (error) {
+      console.error('이미지 처리 중 오류 발생:', error)
+      throw error
+    }
+  }
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
-      const url = URL.createObjectURL(file)
-      setAvatarUrl(url)
+      try {
+        const processed = await processImage(file)
+        // 처리된 이미지 저장
+        setProcessedImage(processed)
+        // 미리보기 URL 생성
+        const previewUrl = URL.createObjectURL(processed)
+        setAvatarUrl(previewUrl)
+      } catch (error) {
+        alert('이미지 처리 중 오류가 발생했습니다.')
+      }
     }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    // FormData 객체 생성
     const formData = new FormData()
-
-    // 사용자 이름과 이름을 FormData에 추가
     formData.append('username', username)
     formData.append('name', name)
 
-    // 이미지 파일이 존재하면 FormData에 이미지 파일을 추가
-    if (fileInputRef.current?.files?.[0]) {
-      formData.append('profileImage', fileInputRef.current.files[0])
+    if (processedImage) {
+      formData.append('profileImage', processedImage)
     }
 
     try {
@@ -49,13 +97,12 @@ export default function SetupProfilePage() {
             'Content-Type': 'multipart/form-data',
           },
         }
-      );
-      router.push('/');
-
+      )
+      router.push('/')
     } catch (error) {
       if (axios.isAxiosError(error)) {
         if (error.response) {
-          alert(error.response.data.message || "오류가 발생했습니다.");
+          alert(error.response.data.message || "오류가 발생했습니다.")
         }
       }
     }
