@@ -21,6 +21,22 @@ export default function SearchPage() {
   const [allUsers, setAllUsers] = useState<SearchUserResponse[]>([]) // 전체 유저 목록
   const [loading, setLoading] = useState(false)
 
+
+  const [loggedInUsername, setLoggedInUsername] = useState<string | null>(null);
+
+
+  // 로그인 된 사용자의 세션을 조회, 존재한다면 사용자의 username(아이디)을 받아옴
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/session/username`, {
+          withCredentials: true,
+        });
+        setLoggedInUsername(response.data.username);
+      } catch (error) { }
+    };
+    checkSession();
+  }, []);
   // 페이지 로딩 시 한 번만 유저 목록을 받아옴
   useEffect(() => {
     const fetchUsers = async () => {
@@ -56,7 +72,7 @@ export default function SearchPage() {
 
   return (
     <div className="flex min-h-screen bg-background">
-      <Sidebar username="asdf"/>
+      <Sidebar username={loggedInUsername}/>
       <main className="flex-1 md:ml-[72px] lg:ml-[245px] mb-16 md:mb-0">
         <header className="sticky top-0 z-40 flex items-center justify-between px-4 h-14 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <h1 className="text-xl font-semibold">검색</h1>
