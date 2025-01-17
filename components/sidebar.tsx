@@ -58,7 +58,7 @@ export function Sidebar({ username }: SidebarProps) {
         <nav className="flex items-center justify-around h-16 px-2 max-w-screen-xl mx-auto">
           {routes.map((route) => (
             <Link
-              key={route.href}
+              key={route.label}
               href={route.href}
               className={`
                 flex items-center justify-center p-2 rounded-lg
