@@ -87,7 +87,7 @@ export default function SetupProfileForm() {
 
     try {
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/welcome-profile-setup`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/welcome-profile-setup`,
         formData,
         {
           withCredentials: true,

@@ -1,62 +1,154 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
-import Image from "next/image"
+import axios from "axios"
 import { Sidebar } from "@/components/sidebar"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
-import { Camera, Loader2 } from 'lucide-react'
+import { Camera, ImageIcon, Loader2 } from "lucide-react"
 
 export default function EditProfilePage() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
-  const [avatar, setAvatar] = useState("/placeholder.svg")
-  const [name, setName] = useState("John Doe")
-  const [username, setUsername] = useState("johndoe")
-  const [bio, setBio] = useState("Software developer | Coffee enthusiast")
+  const [name, setName] = useState("")
+  const [username, setUsername] = useState("")
+  const [bio, setBio] = useState("")
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
+  const [processedImage, setProcessedImage] = useState<File | null>(null)
+
+  // 페이지 로딩 시 프로필 데이터 가져오기
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/me/profile`, {
+          withCredentials: true, // 인증 정보 포함
+        })
+        const { data } = response.data // ApiResponse에서 data 추출
+        setAvatarUrl(data.profileImageUrl || "/placeholder.svg")
+        setName(data.name || "")
+        setUsername(data.username || "")
+        setBio(data.bio || "")
+      } catch (error) {
+        console.error("Failed to fetch profile data:", error)
+      }
+    }
+
+    fetchProfileData()
+  }, [])
+
+  const processImage = async (file: File) => {
+    try {
+      // Dynamically import the libraries only when needed (client-side)
+      const [{ default: imageCompression }, { heicTo }] = await Promise.all([
+        import('browser-image-compression'),
+        import('heic-to')
+      ])
+
+      let processedFile = file
+      const originalFileName = file.name
+
+      if (file.type === "image/heic" || file.type === "image/heif") {
+        const blob = await heicTo({
+          blob: file,
+          type: "image/jpeg",
+        })
+        processedFile = new File([blob], originalFileName.replace(/\.(heic|heif)$/i, '.jpg'), {
+          type: 'image/jpeg'
+        })
+      }
+
+      const options = {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true,
+        fileType: 'image/jpeg'
+      }
+
+      const compressedBlob = await imageCompression(processedFile, options)
+
+      const finalFile = new File(
+        [compressedBlob],
+        processedFile.name,
+        { type: 'image/jpeg' }
+      )
+
+      return finalFile
+    } catch (error) {
+      console.error('이미지 처리 중 오류 발생:', error)
+      throw error
+    }
+  }
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setAvatar(reader.result as string)
+      try {
+        const processed = await processImage(file)
+        setProcessedImage(processed)
+        const previewUrl = URL.createObjectURL(processed)
+        setAvatarUrl(previewUrl)
+      } catch (error) {
+        alert('이미지 처리 중 오류가 발생했습니다.')
       }
-      reader.readAsDataURL(file)
     }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setIsLoading(true)
-    // Here you would typically send the updated profile data to your backend
-    await new Promise(resolve => setTimeout(resolve, 1000)) // Simulating API call
-    setIsLoading(false)
-    router.push("/profile") // Redirect to profile page after saving
+
+    const formData = new FormData()
+    formData.append('username', username)
+    formData.append('name', name)
+    formData.append('bio', bio)
+
+    if (processedImage) {
+      formData.append('profileImage', processedImage)
+    }
+
+    try {
+      const response = await axios.put(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/me/profile`,
+        formData,
+        {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      )
+      router.push('/')
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          alert(error.response.data.message || "오류가 발생했습니다.")
+        }
+      }
+    }
   }
 
   return (
     <div className="flex min-h-screen bg-background">
-      <Sidebar username="username"/>
+      <Sidebar username="username" />
       <main className="flex-1 md:ml-[72px] lg:ml-[245px] mb-16 md:mb-0">
         <header className="sticky top-0 z-40 flex items-center justify-between px-4 h-14 border-b bg-background">
           <h1 className="text-xl font-semibold">프로필 편집</h1>
-          <Button 
+          <Button
             onClick={handleSubmit}
             disabled={isLoading}
           >
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Saving
+                저장 중
               </>
             ) : (
-              'Save'
+              "저장"
             )}
           </Button>
         </header>
@@ -66,8 +158,13 @@ export default function EditProfilePage() {
             <div className="flex flex-col items-center">
               <div className="relative">
                 <Avatar className="h-24 w-24 border-2">
-                  <AvatarImage src={avatar} alt="Profile picture" />
-                  <AvatarFallback>{name[0]}</AvatarFallback>
+                  {avatarUrl ? (
+                    <AvatarImage src={avatarUrl} alt="Profile picture" />
+                  ) : (
+                    <AvatarFallback>
+                      <ImageIcon className="h-12 w-12 text-muted-foreground" />
+                    </AvatarFallback>
+                  )}
                 </Avatar>
                 <Button
                   type="button"
@@ -89,32 +186,31 @@ export default function EditProfilePage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="name">Name</Label>
+              <Label htmlFor="name">이름</Label>
               <Input
                 id="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Your name"
+                placeholder="한글과 영어만 입력 가능"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="username">사용자 아이디</Label>
               <Input
                 id="username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="Your username"
+                placeholder="영어, 숫자, 밑줄 및 마침표만 입력 가능"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="bio">Bio</Label>
+              <Label htmlFor="bio">한줄소개</Label>
               <Textarea
                 id="bio"
                 value={bio}
                 onChange={(e) => setBio(e.target.value)}
-                placeholder="Tell us about yourself"
                 rows={4}
               />
             </div>
@@ -124,4 +220,3 @@ export default function EditProfilePage() {
     </div>
   )
 }
-

@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { ImageIcon, X, AlertCircle } from 'lucide-react'
-import { ImageCarousel } from "@/components/image-carousel"
+import { ImageCarousel } from "@/components/image-carousel2"
 import axios from "axios"
 
 export default function CreatePage() {
@@ -39,7 +39,6 @@ export default function CreatePage() {
   const router = useRouter()
   const [content, setContent] = useState("")
   const [imageUrls, setImageUrls] = useState<string[]>([])
-  const fileInputRef = useRef<HTMLInputElement>(null)
   const maxLength = 500
 
   useEffect(() => {
@@ -59,20 +58,34 @@ export default function CreatePage() {
     fetchPostData()
   }, [postId])
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files
-    if (files) {
-      const newImageUrls = Array.from(files).map(file => URL.createObjectURL(file))
-      setImageUrls(prev => [...prev, ...newImageUrls])
-    }
-  }
-
-
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-
-    router.push("/")
-  }
+    e.preventDefault();
+  
+    try {
+      const response = await axios.patch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/post/edit/${postId}`,
+        { content },
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json", // Content-Type 명시
+          },
+        }
+      );
+  
+      if (response.status === 200) {
+        alert("게시글이 성공적으로 수정되었습니다.");
+        router.push("/"); // 수정 완료 후 메인 페이지로 이동
+      } else {
+        console.error("게시글 수정 실패:", response.data);
+        alert("게시글 수정 중 문제가 발생했습니다. 다시 시도해주세요.");
+      }
+    } catch (error) {
+      console.error("서버 요청 중 오류:", error);
+      alert("서버와 통신하는 중 문제가 발생했습니다.");
+    }
+  };
+  
 
   return (
 
@@ -127,8 +140,8 @@ export default function CreatePage() {
             </div>
           </div>
           <div className="mt-6 text-center text-sm text-muted-foreground">
-            <p>Your thread will be visible on your profile and in your followers' feeds.</p>
-            <p className="mt-2">You can add up to 4 photos to your thread.</p>
+            <p>당신의 게시물은 누구나 볼 수 있습니다.</p>
+            <p className="mt-2">게시물의 내용은 최대 500자까지 작성할 수 있습니다.</p>
           </div>
         </div>
       </main>
