@@ -95,7 +95,7 @@ export function Sidebar({ username }: SidebarProps) {
         <nav className="flex flex-col space-y-1">
           {routes.map((route) => (
             <Link
-              key={route.href}
+              key={route.label}
               href={route.href}
               className={`
                 flex items-center px-6 py-3 hover:bg-accent rounded-lg transition-colors
@@ -111,4 +111,3 @@ export function Sidebar({ username }: SidebarProps) {
     </div>
   )
 }
-
