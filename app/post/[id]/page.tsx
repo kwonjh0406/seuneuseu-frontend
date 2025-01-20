@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
 import { Sidebar } from "@/components/sidebar"
 import { Post } from "@/components/post"
@@ -8,6 +8,7 @@ import { Comment } from "@/components/comment"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
+import axios from "axios"
 
 interface ReplyType {
   id: string
@@ -28,19 +29,29 @@ interface CommentType {
   replies: ReplyType[]
 }
 
-// Mock data (in a real app, you'd fetch this from an API)
-const mockPost = {
-  id: "1",
-  username: "johndoe",
-  avatar: "/placeholder.svg",
-  timeAgo: "2h",
-  content: "This is a sample post content. What do you think?",
-  likes: 10,
-  replies: 3,
-  profileImageUrl: "asdf",
-  loggedInUsername: "asdf",
-  postId: 1,
-  name: "qfew"
+const emptyPost: PostResponse = {
+  postId: 0,
+  content: "",
+  imageUrls: [],
+  likes: 0,
+  replies: 0,
+  timeAgo: "",
+  username: "",
+  name: "",
+  profileImageUrl: "",
+}
+
+
+interface PostResponse {
+  postId: number;
+  content: string;
+  imageUrls: string[];
+  likes: number;
+  replies: number;
+  timeAgo: string;
+  username: string;
+  name: string;
+  profileImageUrl: string;
 }
 
 const mockComments: CommentType[] = [
@@ -78,6 +89,35 @@ export default function PostPage() {
   const postId = params.id as string
   const [commentContent, setCommentContent] = useState("")
   const [comments, setComments] = useState(mockComments)
+  const [post, setPost] = useState<PostResponse>(emptyPost)
+  const [loggedInUsername, setLoggedInUsername] = useState<string | null>(null);
+
+  // 로그인 된 사용자의 세션을 조회, 존재한다면 사용자의 username(아이디)을 받아옴
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users/me/username`, {
+          withCredentials: true,
+        });
+        setLoggedInUsername(response.data.username);
+      } catch (error) { }
+    };
+    checkSession();
+  }, []);
+
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${postId}`) // API 경로 수정 필요
+        console.log(response.data);
+        setPost(response.data.data);
+      } catch (error) {
+        console.error("Failed to fetch post or comments:", error)
+      }
+    };
+    fetchPost();
+  }, [postId])
+
 
   const handleSubmitComment = (e: React.FormEvent) => {
     e.preventDefault()
@@ -92,7 +132,7 @@ export default function PostPage() {
     }
     setComments([newComment, ...comments])
     setCommentContent("")
-    
+
     // In a real application, you would send a request to your API here
     console.log("Submitting comment for postId:", postId)
   }
@@ -106,7 +146,7 @@ export default function PostPage() {
       content: replyContent,
       likes: 0,
     }
-    
+
     const updatedComments = comments.map(comment => {
       if (comment.id === commentId) {
         return {
@@ -116,27 +156,31 @@ export default function PostPage() {
       }
       return comment
     })
-    
+
     setComments(updatedComments)
-    
+
     // In a real application, you would send a request to your API here
     console.log("Submitting reply for postId:", postId, "commentId:", commentId, "replyToReplyId:", replyToReplyId)
   }
 
   return (
     <div className="flex min-h-screen bg-background">
-      <Sidebar username="asdf"/>
+      <Sidebar username="asdf" />
       <main className="flex-1 md:ml-[72px] lg:ml-[245px] mb-16 md:mb-0">
         <header className="sticky top-0 z-40 flex items-center justify-between px-4 h-14 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <h1 className="text-xl font-semibold">게시물</h1>
         </header>
 
-        <div className="max-w-[640px] mx-auto px-4 py-6 bg-background/80 backdrop-blur-sm">
-          <Post {...mockPost} />
+        <div className="max-w-[640px] mx-auto bg-background/80 backdrop-blur-sm">
+          <Post
+            {...post}  // PostResponse의 모든 필드를 spread
+            loggedInUsername={loggedInUsername}
+            isLast={true}  // 별도 prop으로 전달
+          />
 
           <div className="my-6 border-t border-border" />
 
-          <div className="mt-4">
+          <div className="mt-4 px-4 py-6">
             <h2 className="text-lg font-semibold mb-4">댓글</h2>
             <form onSubmit={handleSubmitComment} className="mb-8">
               <div className="flex gap-3">
@@ -162,9 +206,9 @@ export default function PostPage() {
 
             <div className="space-y-6">
               {comments.map((comment) => (
-                <Comment 
-                  key={comment.id} 
-                  {...comment} 
+                <Comment
+                  key={comment.id}
+                  {...comment}
                   onReply={handleReply}
                 />
               ))}
