@@ -1,8 +1,16 @@
 import { useState } from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Heart, MessageCircle } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
+
+interface ReplyType {
+  id: string
+  username: string
+  avatar: string
+  timeAgo: string
+  content: string
+  likes: number
+}
 
 interface CommentProps {
   id: string
@@ -11,86 +19,113 @@ interface CommentProps {
   timeAgo: string
   content: string
   likes: number
-  replies?: CommentProps[]
-  onReply: (commentId: string, content: string) => void
+  replies: ReplyType[]
+  onReply: (commentId: string, replyContent: string, replyToReplyId?: string) => void
 }
 
-export function Comment({
-  id,
-  username,
-  avatar,
-  timeAgo,
-  content,
-  likes,
-  replies,
-  onReply
-}: CommentProps) {
+export function Comment({ id, username, avatar, timeAgo, content, likes, replies, onReply }: CommentProps) {
   const [isReplying, setIsReplying] = useState(false)
+  const [replyingTo, setReplyingTo] = useState<string | null>(null)
   const [replyContent, setReplyContent] = useState("")
 
-  const handleReply = () => {
-    onReply(id, replyContent)
+  const handleSubmitReply = (e: React.FormEvent, replyToReplyId?: string) => {
+    e.preventDefault()
+    onReply(id, replyContent, replyToReplyId)
     setReplyContent("")
     setIsReplying(false)
+    setReplyingTo(null)
+  }
+
+  const handleReplyClick = (replyId?: string) => {
+    setIsReplying(true)
+    setReplyingTo(replyId || null)
   }
 
   return (
-    <div className="relative flex gap-3 py-4 group">
-      <Avatar className="h-10 w-10 shrink-0">
-        <AvatarImage src={avatar} />
-        <AvatarFallback>{username[0]}</AvatarFallback>
-      </Avatar>
-
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 mb-1">
-          <span className="font-semibold text-sm">{username}</span>
-          <span className="text-muted-foreground text-xs">{timeAgo}</span>
-        </div>
-
-        <p className="text-sm mb-3 leading-relaxed">{content}</p>
-
-        <div className="flex gap-4 mt-3">
-          <button className="flex items-center gap-1 text-muted-foreground hover:text-primary transition-colors group/button">
-            <div className="p-2 -m-2 rounded-full group-hover/button:bg-primary/10">
-              <Heart className="w-[1.125rem] h-[1.125rem]" />
-            </div>
-            <span className="text-sm">{likes}</span>
-          </button>
-          <button 
-            className="flex items-center gap-1 text-muted-foreground hover:text-primary transition-colors group/button"
-            onClick={() => setIsReplying(!isReplying)}
-          >
-            <div className="p-2 -m-2 rounded-full group-hover/button:bg-primary/10">
-              <MessageCircle className="w-[1.125rem] h-[1.125rem]" />
-            </div>
-            <span className="text-sm">Reply</span>
-          </button>
-        </div>
-
-        {isReplying && (
-          <div className="mt-3 pl-3 border-l-2 border-muted">
-            <Textarea
-              value={replyContent}
-              onChange={(e) => setReplyContent(e.target.value)}
-              placeholder="Write a reply..."
-              className="min-h-[80px] text-sm resize-none border-none bg-muted focus-visible:ring-1 focus-visible:ring-primary"
-            />
-            <div className="flex justify-end mt-2">
-              <Button size="sm" onClick={handleReply} disabled={!replyContent.trim()}>
-                Reply
-              </Button>
-            </div>
+    <div className="space-y-4">
+      <div className="flex gap-3">
+        <Avatar className="h-10 w-10 shrink-0">
+          <AvatarImage src={avatar} />
+          <AvatarFallback>{username[0]}</AvatarFallback>
+        </Avatar>
+        <div className="flex-1 space-y-2">
+          <div className="flex items-center gap-2">
+            <span className="font-semibold">{username}</span>
+            <span className="text-sm text-muted-foreground">{timeAgo}</span>
           </div>
-        )}
-
-        {replies && replies.length > 0 && (
-          <div className="mt-4 pl-4 border-l border-border">
-            {replies.map((reply) => (
-              <Comment key={reply.id} {...reply} onReply={onReply} />
-            ))}
+          <p>{content}</p>
+          <div className="flex items-center gap-4 text-sm">
+            <button onClick={() => handleReplyClick()} className="text-muted-foreground hover:text-foreground">
+              Reply
+            </button>
           </div>
-        )}
+        </div>
       </div>
+
+      {isReplying && replyingTo === null && (
+        <form onSubmit={(e) => handleSubmitReply(e)} className="ml-12 mt-2">
+          <Textarea
+            value={replyContent}
+            onChange={(e) => setReplyContent(e.target.value)}
+            placeholder="Write a reply..."
+            className="min-h-[80px] resize-none"
+          />
+          <div className="mt-2 flex justify-end gap-2">
+            <Button type="button" variant="ghost" onClick={() => setIsReplying(false)}>
+              Cancel
+            </Button>
+            <Button type="submit" disabled={!replyContent.trim()}>
+              Reply
+            </Button>
+          </div>
+        </form>
+      )}
+
+      {replies.length > 0 && (
+        <div className="ml-12 space-y-4">
+          {replies.map((reply) => (
+            <div key={reply.id} className="space-y-2">
+              <div className="flex gap-3">
+                <Avatar className="h-8 w-8 shrink-0">
+                  <AvatarImage src={reply.avatar} />
+                  <AvatarFallback>{reply.username[0]}</AvatarFallback>
+                </Avatar>
+                <div className="flex-1 space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold">{reply.username}</span>
+                    <span className="text-sm text-muted-foreground">{reply.timeAgo}</span>
+                  </div>
+                  <p>{reply.content}</p>
+                  <div className="flex items-center gap-4 text-sm">
+                    <button className="text-muted-foreground hover:text-foreground">Like ({reply.likes})</button>
+                    <button onClick={() => handleReplyClick(reply.id)} className="text-muted-foreground hover:text-foreground">
+                      Reply
+                    </button>
+                  </div>
+                </div>
+              </div>
+              {isReplying && replyingTo === reply.id && (
+                <form onSubmit={(e) => handleSubmitReply(e, reply.id)} className="ml-10 mt-2">
+                  <Textarea
+                    value={replyContent}
+                    onChange={(e) => setReplyContent(e.target.value)}
+                    placeholder="Write a reply..."
+                    className="min-h-[80px] resize-none"
+                  />
+                  <div className="mt-2 flex justify-end gap-2">
+                    <Button type="button" variant="ghost" onClick={() => setIsReplying(false)}>
+                      Cancel
+                    </Button>
+                    <Button type="submit" disabled={!replyContent.trim()}>
+                      Reply
+                    </Button>
+                  </div>
+                </form>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

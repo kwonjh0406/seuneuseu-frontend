@@ -19,6 +19,7 @@ interface PostResponseDto {
   likes: number;
   replies: number;
   profileImageUrl: string;
+  imageUrls: string[];
 }
 
 export default function ProfilePage() {
@@ -32,7 +33,7 @@ export default function ProfilePage() {
   useEffect(() => {
     const checkSession = async () => {
       try {
-        const response = await axios.get("/api/session/username", {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users/me/username`, {
           withCredentials: true,
         });
         setLoggedInUsername(response.data.username);
@@ -64,10 +65,10 @@ export default function ProfilePage() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/username?username=${username}`, {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users/${username}/posts`, {
           withCredentials: true,
         });
-        setPosts(response.data); // 게시물 배열
+        setPosts(response.data.data); // 게시물 배열
       } catch (error) {
         console.error('Failed to fetch posts:', error);
       }
@@ -98,7 +99,7 @@ export default function ProfilePage() {
         </header>
 
         <div className="max-w-[640px] mx-auto">
-          <ProfileHeader {...userProfile} loggedInUsername={loggedInUsername}/>
+          <ProfileHeader {...userProfile} loggedInUsername={loggedInUsername} />
 
           <Tabs defaultValue="threads" className="mt-4">
             <TabsList className="w-full justify-start h-12 p-0 bg-transparent border-b rounded-none">
@@ -119,17 +120,18 @@ export default function ProfilePage() {
               <div className="divide-y">
                 {posts.map((post, index) => (
                   <Post
-                  key={post.postId}
-                  postId={post.postId}
-                  loggedInUsername={loggedInUsername}
-                  profileImageUrl={post.profileImageUrl}
-                  timeAgo={post.timeAgo}
-                  username={post.username}
-                  name={post.name}
-                  content={post.content}
-                  likes={post.likes}
-                  replies={post.replies}
-                  isLast={index === posts.length - 1}
+                    key={post.postId}
+                    postId={post.postId}
+                    loggedInUsername={loggedInUsername}
+                    profileImageUrl={post.profileImageUrl}
+                    timeAgo={post.timeAgo}
+                    username={post.username}
+                    name={post.name}
+                    content={post.content}
+                    imageUrls={post.imageUrls}
+                    likes={post.likes}
+                    replies={post.replies}
+                    isLast={index === posts.length - 1}
                   />
                 ))}
               </div>

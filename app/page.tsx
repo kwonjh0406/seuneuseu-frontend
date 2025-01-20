@@ -28,7 +28,7 @@ export default function Home() {
   useEffect(() => {
     const checkSession = async () => {
       try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/session/username`, {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users/me/username`, {
           withCredentials: true,
         });
         setLoggedInUsername(response.data.username);

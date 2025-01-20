@@ -17,7 +17,7 @@ export default function CreatePage() {
   useEffect(() => {
     const checkSession = async () => {
       try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/session/username`, {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users/me/username`, {
           withCredentials: true,
         });
         if (response.data.username == null) {
@@ -73,8 +73,6 @@ export default function CreatePage() {
           },
         }
       );
-
-      alert(response.data.message);
       router.push("/");
     } catch (error) {
       console.error("게시글 작성 실패:", error);
