@@ -40,7 +40,9 @@ export function ProfileHeader({
         </Avatar>
       </div>
 
-      <p className="mt-4 text-sm whitespace-pre-wrap">{bio}</p>
+      <p className="mt-4 text-sm break-all whitespace-pre-wrap">
+        {bio}
+      </p>
 
       <div className="flex gap-4 mt-4 text-sm text-muted-foreground">
         <span>팔로워 {follower}명</span>
@@ -54,8 +56,7 @@ export function ProfileHeader({
         </Link>
         ) : (
           <>
-            <Button variant="default" className="flex-1">로그인</Button>
-            <Button className="flex-1">프로필 편집</Button>
+            <Button className="flex-1">팔로우</Button>
           </>
         )}
       </div>

@@ -5,14 +5,12 @@ interface UserSearchResultProps {
   username: string
   name: string
   profileImageUrl: string
-  bio: string
 }
 
 export function UserSearchResult({
   username,
   name,
   profileImageUrl,
-  bio,
 }: UserSearchResultProps) {
   return (
     <Link href={`/${username}`}>
@@ -31,7 +29,6 @@ export function UserSearchResult({
               <p className="text-sm text-muted-foreground">@{username}</p>
             </div>
           </div>
-          <p className="text-sm mt-1 truncate">{bio}</p>
         </div>
       </div>
     </Link>

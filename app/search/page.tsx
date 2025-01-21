@@ -14,7 +14,6 @@ interface SearchUserResponse {
   username: string;
   name: string;
   profileImageUrl: string;
-  bio: string;
 }
 
 export default function SearchPage() {
@@ -23,9 +22,7 @@ export default function SearchPage() {
   const [allUsers, setAllUsers] = useState<SearchUserResponse[]>([]) // 전체 유저 목록
   const [loading, setLoading] = useState(false)
 
-
   const [loggedInUsername, setLoggedInUsername] = useState<string | null>(null);
-
 
   // 로그인 된 사용자의 세션을 조회, 존재한다면 사용자의 username(아이디)을 받아옴
   useEffect(() => {
