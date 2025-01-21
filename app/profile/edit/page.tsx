@@ -22,25 +22,113 @@ export default function EditProfilePage() {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
   const [processedImage, setProcessedImage] = useState<File | null>(null)
 
-  // 페이지 로딩 시 프로필 데이터 가져오기
-  useEffect(() => {
-    const fetchProfileData = async () => {
-      try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/me/profile`, {
-          withCredentials: true, // 인증 정보 포함
-        })
-        const { data } = response.data // ApiResponse에서 data 추출
-        setAvatarUrl(data.profileImageUrl || "/placeholder.svg")
-        setName(data.name || "")
-        setUsername(data.username || "")
-        setBio(data.bio || "")
-      } catch (error) {
-        console.error("Failed to fetch profile data:", error)
+  // 초기 상태를 저장할 변수 추가
+const [initialProfile, setInitialProfile] = useState({
+  name: "",
+  username: "",
+  bio: "",
+  avatarUrl: "",
+})
+
+useEffect(() => {
+  const fetchProfileData = async () => {
+    try {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/me/profile`, {
+        withCredentials: true,
+      })
+      const { data } = response.data
+      const profileData = {
+        name: data.name || "",
+        username: data.username || "",
+        bio: data.bio || "",
+        avatarUrl: data.profileImageUrl || "/placeholder.svg",
+      }
+      setInitialProfile(profileData)
+      setName(profileData.name)
+      setUsername(profileData.username)
+      setBio(profileData.bio)
+      setAvatarUrl(profileData.avatarUrl)
+    } catch (error) {
+      console.error("Failed to fetch profile data:", error)
+    }
+  }
+
+  fetchProfileData()
+}, [])
+
+
+  
+
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault()
+
+  if (!initialProfile) {
+    alert("초기 데이터를 불러오는 중입니다.")
+    return
+  }
+
+  const formData = new FormData()
+
+  // 변경된 필드만 FormData에 추가
+  if (name !== initialProfile.name) {
+    formData.append("name", name || "")
+  }
+
+  if (username !== initialProfile.username) {
+    formData.append("username", username || "")
+  }
+
+  if (bio !== initialProfile.bio) {
+    formData.append("bio", bio || "")
+  }
+
+  if (processedImage) {
+    formData.append("profileImage", processedImage)
+  }
+
+  try {
+    const response = await axios.patch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/me/profile`,
+      formData,
+      {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    )
+    router.back()
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (error.response) {
+        alert(error.response.data.message || "오류가 발생했습니다.")
       }
     }
+  }
+}
 
-    fetchProfileData()
-  }, [])
+
+
+  
+  // 페이지 로딩 시 프로필 데이터 가져오기
+  // useEffect(() => {
+  //   const fetchProfileData = async () => {
+  //     try {
+  //       const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/me/profile`, {
+  //         withCredentials: true, // 인증 정보 포함
+  //       })
+  //       const { data } = response.data // ApiResponse에서 data 추출
+  //       setAvatarUrl(data.profileImageUrl || "/placeholder.svg")
+  //       setName(data.name || "")
+  //       setUsername(data.username || "")
+  //       setBio(data.bio || "")
+  //     } catch (error) {
+  //       console.error("Failed to fetch profile data:", error)
+  //     }
+  //   }
+
+  //   fetchProfileData()
+  // }, [])
 
   const processImage = async (file: File) => {
     try {
@@ -99,38 +187,38 @@ export default function EditProfilePage() {
     }
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault()
 
-    const formData = new FormData()
-    formData.append('username', username)
-    formData.append('name', name)
-    formData.append('bio', bio)
+  //   const formData = new FormData()
+  //   formData.append('username', username)
+  //   formData.append('name', name)
+  //   formData.append('bio', bio)
 
-    if (processedImage) {
-      formData.append('profileImage', processedImage)
-    }
+  //   if (processedImage) {
+  //     formData.append('profileImage', processedImage)
+  //   }
 
-    try {
-      const response = await axios.put(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/me/profile`,
-        formData,
-        {
-          withCredentials: true,
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        }
-      )
-      router.push('/')
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        if (error.response) {
-          alert(error.response.data.message || "오류가 발생했습니다.")
-        }
-      }
-    }
-  }
+  //   try {
+  //     const response = await axios.patch(
+  //       `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/me/profile`,
+  //       formData,
+  //       {
+  //         withCredentials: true,
+  //         headers: {
+  //           'Content-Type': 'multipart/form-data',
+  //         },
+  //       }
+  //     )
+  //     router.push('/')
+  //   } catch (error) {
+  //     if (axios.isAxiosError(error)) {
+  //       if (error.response) {
+  //         alert(error.response.data.message || "오류가 발생했습니다.")
+  //       }
+  //     }
+  //   }
+  // }
 
   return (
     <div className="flex min-h-screen bg-background">

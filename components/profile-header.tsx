@@ -40,7 +40,7 @@ export function ProfileHeader({
         </Avatar>
       </div>
 
-      <p className="mt-4 text-sm whitespace-pre-wrap">{bio}ㄹㅇ</p>
+      <p className="mt-4 text-sm whitespace-pre-wrap">{bio}</p>
 
       <div className="flex gap-4 mt-4 text-sm text-muted-foreground">
         <span>팔로워 {follower}명</span>
