@@ -9,24 +9,17 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import axios from "axios"
-
-interface ReplyType {
-  id: string
-  username: string
-  avatar: string
-  timeAgo: string
-  content: string
-  likes: number
-}
+import Link from "next/link"
 
 interface CommentType {
   id: string
+  parentId: string | null
   username: string
-  avatar: string
+  profileImageUrl: string
   timeAgo: string
   content: string
   likes: number
-  replies: ReplyType[]
+  replies?: CommentType[]
 }
 
 const emptyPost: PostResponse = {
@@ -41,7 +34,6 @@ const emptyPost: PostResponse = {
   profileImageUrl: "",
 }
 
-
 interface PostResponse {
   postId: number;
   content: string;
@@ -54,45 +46,15 @@ interface PostResponse {
   profileImageUrl: string;
 }
 
-const mockComments: CommentType[] = [
-  {
-    id: "1",
-    username: "janedoe",
-    avatar: "/placeholder.svg",
-    timeAgo: "1h",
-    content: "Great post! I totally agree.",
-    likes: 5,
-    replies: [
-      {
-        id: "1-1",
-        username: "bobsmith",
-        avatar: "/placeholder.svg",
-        timeAgo: "30m",
-        content: "I agree with Jane!",
-        likes: 2,
-      },
-    ],
-  },
-  {
-    id: "2",
-    username: "alicegreen",
-    avatar: "/placeholder.svg",
-    timeAgo: "45m",
-    content: "Interesting perspective. Thanks for sharing!",
-    likes: 3,
-    replies: [],
-  },
-]
-
 export default function PostPage() {
   const params = useParams()
   const postId = params.id as string
   const [commentContent, setCommentContent] = useState("")
-  const [comments, setComments] = useState(mockComments)
+  const [comments, setComments] = useState<CommentType[]>([])
   const [post, setPost] = useState<PostResponse>(emptyPost)
   const [loggedInUsername, setLoggedInUsername] = useState<string | null>(null);
+  const [replyToId, setReplyToId] = useState<string | null>(null);
 
-  // 로그인 된 사용자의 세션을 조회, 존재한다면 사용자의 username(아이디)을 받아옴
   useEffect(() => {
     const checkSession = async () => {
       try {
@@ -106,62 +68,98 @@ export default function PostPage() {
   }, []);
 
   useEffect(() => {
-    const fetchPost = async () => {
+    const fetchPostAndComments = async () => {
       try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${postId}`) // API 경로 수정 필요
-        console.log(response.data);
-        setPost(response.data.data);
+        const [postResponse, commentsResponse] = await Promise.all([
+          axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${postId}`),
+          axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${postId}/comments`)
+        ]);
+
+        setPost(postResponse.data.data);
+
+        // 서버 응답 데이터를 CommentType 형식에 맞게 변환
+        const transformedComments = commentsResponse.data.data.map((comment: any) => ({
+          ...comment,
+          parentId: comment.parentId || null, // parentId가 없는 경우 null로 설정
+          replies: [] // 초기 replies 배열 설정
+        }));
+
+        setComments(transformedComments);
       } catch (error) {
-        console.error("Failed to fetch post or comments:", error)
+        console.error("Error fetching data:", error);
       }
     };
-    fetchPost();
-  }, [postId])
+    fetchPostAndComments();
+  }, [postId]);
 
+  const getCommentHierarchy = (comments: CommentType[]) => {
+    try {
+      // parentId가 null인 최상위 댓글만 필터링
+      const topLevelComments = comments.filter(comment => !comment.parentId);
 
-  const handleSubmitComment = (e: React.FormEvent) => {
+      // 각 최상위 댓글에 대한 답글 찾기
+      return topLevelComments.map(comment => ({
+        ...comment,
+        replies: comments.filter(reply => reply.parentId === comment.id) || []
+      }));
+    } catch (error) {
+      console.error("Error in getCommentHierarchy:", error);
+      return []; // 에러 발생 시 빈 배열 반환
+    }
+  };
+
+  const handleSubmitComment = async (e: React.FormEvent) => {
     e.preventDefault()
-    const newComment: CommentType = {
-      id: String(comments.length + 1),
-      username: "currentuser",
-      avatar: "/placeholder.svg",
-      timeAgo: "Just now",
-      content: commentContent,
-      likes: 0,
-      replies: [],
-    }
-    setComments([newComment, ...comments])
-    setCommentContent("")
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${postId}/comments`,
+        {
+          content: commentContent,
+          parentId: replyToId,
+        },
+        { withCredentials: true }
+      );
+      window.location.reload();
 
-    // In a real application, you would send a request to your API here
-    console.log("Submitting comment for postId:", postId)
+    } catch (error) {
+      console.error("Error submitting comment:", error);
+    }
   }
 
-  const handleReply = (commentId: string, replyContent: string, replyToReplyId?: string) => {
-    const newReply: ReplyType = {
-      id: `${commentId}-${Date.now()}`,
-      username: "currentuser",
-      avatar: "/placeholder.svg",
-      timeAgo: "Just now",
-      content: replyContent,
-      likes: 0,
-    }
 
-    const updatedComments = comments.map(comment => {
-      if (comment.id === commentId) {
-        return {
-          ...comment,
-          replies: [...comment.replies, newReply],
+  const handleReply = async (commentId: string, content: string) => {
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${postId}/comments`,
+        {
+          content: content,
+          parentId: commentId
+        },
+        { withCredentials: true }
+      );
+      window.location.reload();
+
+      const newReply = {
+        ...response.data.data,
+        parentId: commentId,
+        replies: []
+      };
+
+      setComments(prev => prev.map(comment => {
+        if (comment.id === commentId) {
+          return {
+            ...comment,
+            replies: [...(comment.replies || []), newReply]
+          };
         }
-      }
-      return comment
-    })
+        return comment;
+      }));
+    } catch (error) {
+      console.error("Failed to submit reply:", error);
+    }
+  };
 
-    setComments(updatedComments)
-
-    // In a real application, you would send a request to your API here
-    console.log("Submitting reply for postId:", postId, "commentId:", commentId, "replyToReplyId:", replyToReplyId)
-  }
+  const commentHierarchy = getCommentHierarchy(comments);
 
   return (
     <div className="flex min-h-screen bg-background">
@@ -169,13 +167,22 @@ export default function PostPage() {
       <main className="flex-1 md:ml-[72px] lg:ml-[245px] mb-16 md:mb-0">
         <header className="sticky top-0 z-40 flex items-center justify-between px-4 h-14 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <h1 className="text-xl font-semibold">게시물</h1>
+          {loggedInUsername ? (
+            <Link href="/logout" prefetch={false} passHref>
+              <Button>로그아웃</Button>
+            </Link>
+          ) : (
+            <Link href="/login" passHref>
+              <Button>로그인</Button>
+            </Link>
+          )}
         </header>
 
         <div className="max-w-[640px] mx-auto bg-background/80 backdrop-blur-sm">
           <Post
-            {...post}  // PostResponse의 모든 필드를 spread
+            {...post}
             loggedInUsername={loggedInUsername}
-            isLast={true}  // 별도 prop으로 전달
+            isLast={true}
           />
 
           <div className="my-6 border-t border-border" />
@@ -192,23 +199,31 @@ export default function PostPage() {
                   <Textarea
                     value={commentContent}
                     onChange={(e) => setCommentContent(e.target.value)}
-                    placeholder="Add a comment..."
+                    placeholder={replyToId ? "답글 작성하기..." : "댓글 작성하기..."}
                     className="min-h-[80px] resize-none border-none bg-muted focus-visible:ring-1 focus-visible:ring-primary"
                   />
-                  <div className="flex justify-end">
-                    <Button type="submit" disabled={!commentContent.trim()} size="sm">
-                      작성
-                    </Button>
+                  <div className="flex justify-end gap-2">
+                    {replyToId && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setReplyToId(null)}
+                      >
+                        취소
+                      </Button>
+                    )}
+                    <Button type="submit" disabled={!commentContent.trim()} size="sm">게시</Button>
                   </div>
                 </div>
               </div>
             </form>
 
             <div className="space-y-6">
-              {comments.map((comment) => (
+              {commentHierarchy.map((comment) => (
                 <Comment
                   key={comment.id}
                   {...comment}
+                  replies={comment.replies || []}
                   onReply={handleReply}
                 />
               ))}
@@ -219,4 +234,3 @@ export default function PostPage() {
     </div>
   )
 }
-
