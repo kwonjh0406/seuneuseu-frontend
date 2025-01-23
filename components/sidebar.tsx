@@ -4,6 +4,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Home, Search, PlusSquare, Heart, User } from 'lucide-react'
 import { useEffect, useState } from "react"
+import { useRouter } from "next/router"
 
 interface SidebarProps {
   username: string | null
