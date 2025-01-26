@@ -8,9 +8,9 @@ const inter = Inter({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "스느스",
   description: "새로운 소통의 시작, 여러분의 생각을 공유하세요",
-  viewport: 'width=device-width, initial-scale=1, user-scalable=no',
 }
 
+export const viewport = 'width=device-width, initial-scale=1, user-scalable=no';
 
 export default function RootLayout({
   children,
