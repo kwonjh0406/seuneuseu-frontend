@@ -72,7 +72,7 @@ export function Post({
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 min-w-0">
             <Link href={`/${username}`} passHref><span className="font-semibold truncate">{name}</span></Link>
-            <Link href={`/${username}`} passHref><span className="text-muted-foreground shrink-0">@{username}</span></Link>
+            {/* <Link href={`/${username}`} passHref><span className="text-muted-foreground shrink-0">@{username}</span></Link> */}
             <span className="text-muted-foreground">·</span>
             <span className="text-muted-foreground shrink-0">{timeAgo}</span>
           </div>
