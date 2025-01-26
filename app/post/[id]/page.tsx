@@ -167,6 +167,7 @@ export default function PostPage() {
       <main className="flex-1 md:ml-[72px] lg:ml-[245px] mb-16 md:mb-0">
         <header className="sticky top-0 z-40 flex items-center justify-between px-4 h-14 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <h1 className="text-xl font-semibold">게시물</h1>
+          
           {loggedInUsername ? (
             <Link href="/logout" prefetch={false} passHref>
               <Button>로그아웃</Button>
@@ -188,7 +189,7 @@ export default function PostPage() {
           <div className="my-6 border-t border-border" />
 
           <div className="mt-4 mb-6 px-6">
-            <h2 className="text-lg font-semibold mb-4">댓글</h2>
+          <h2 className="text-lg font-semibold mb-4">댓글</h2>
             {loggedInUsername && (
               <form onSubmit={handleSubmitComment} className="mb-8">
                 <div className="flex gap-3">
@@ -196,7 +197,26 @@ export default function PostPage() {
         <AvatarImage src="/placeholder.svg" />
         <AvatarFallback>U</AvatarFallback>
       </Avatar> */}
-                  <div className="flex-1 min-w-0 space-y-3">
+                  <div className="flex-1 min-w-0">
+                    <Textarea
+                      value={commentContent}
+                      onChange={(e) => setCommentContent(e.target.value)}
+                      placeholder={replyToId ? "답글 작성하기..." : "댓글 작성하기..."}
+                      className="min-h-[40px] max-h-[120px] resize-none border-0 bg-transparent p-0 focus-visible:ring-0 text-[15px]"
+                    />
+                    <div className="flex justify-end items-center mt-2 border-t pt-2">
+                      <Button
+                        type="submit"
+                        variant="ghost"
+                        size="sm"
+                        className={`font-semibold ${!commentContent.trim() ? "text-primary/50" : "text-primary"}`}
+                        disabled={!commentContent.trim()}
+                      >
+                        게시
+                      </Button>
+                    </div>
+
+                    {/* <div className="flex-1 min-w-0 space-y-3">
                     <Textarea
                       value={commentContent}
                       onChange={(e) => setCommentContent(e.target.value)}
@@ -214,7 +234,7 @@ export default function PostPage() {
                         </Button>
                       )}
                       <Button type="submit" disabled={!commentContent.trim()} size="sm">게시</Button>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </form>
@@ -222,12 +242,13 @@ export default function PostPage() {
 
 
             <div className="space-y-6">
-              {commentHierarchy.map((comment) => (
+              {commentHierarchy.map((comment, index) => (
                 <Comment
                   key={comment.id}
                   {...comment}
                   replies={comment.replies || []}
                   onReply={handleReply}
+                  isLast={index === commentHierarchy.length - 1}
                 />
               ))}
             </div>

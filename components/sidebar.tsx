@@ -79,9 +79,11 @@ export function Sidebar({ username }: SidebarProps) {
       <div className="w-[72px] lg:w-[245px] h-full py-4">
 
         <Link href="/" className="flex items-center px-6 py-2 mb-2">
-          <div className="relative w-7 h-7">
+          <div className="relative w-7 h-7 text-black dark:text-white">
             <svg viewBox="0 0 120 28" height="28" xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="hidden lg:block">
-              <text x="0" y="24" fontSize="28" fontFamily="Arial" fontWeight="bold" fill="black">스느스</text>
+              <text x="0" y="24" fontSize="28" fontFamily="Arial" fontWeight="bold">
+                스느스
+              </text>
             </svg>
             <svg viewBox="0 0 500 500" fill="currentColor" className="lg:hidden">
               <g transform="translate(0.000000,500.000000) scale(0.100000,-0.100000)">
@@ -92,6 +94,7 @@ export function Sidebar({ username }: SidebarProps) {
             </svg>
           </div>
         </Link>
+
 
         <nav className="flex flex-col space-y-1">
           {routes.map((route) => (

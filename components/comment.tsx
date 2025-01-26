@@ -16,6 +16,7 @@ interface CommentType {
 interface CommentProps extends CommentType {
   replies: CommentType[]
   onReply: (commentId: string, content: string) => void
+  isLast: boolean
 }
 
 export function Comment({
@@ -25,20 +26,21 @@ export function Comment({
   timeAgo,
   content,
   replies,
-  onReply
+  onReply,
+  isLast
 }: CommentProps) {
   const [replyingTo, setReplyingTo] = useState<string | null>(null)
-  
+
   const ReplyForm = ({ parentId }: { parentId: string }) => {
     const [replyContent, setReplyContent] = useState("")
-    
+
     const handleSubmitReply = (e: React.FormEvent) => {
       e.preventDefault()
       onReply(parentId, replyContent)
       setReplyContent("")
       setReplyingTo(null)
     }
-    
+
     return (
       <form onSubmit={handleSubmitReply} className="mt-2 ml-12">
         <Textarea
@@ -67,31 +69,28 @@ export function Comment({
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 relative">
       <div className="flex gap-3">
-        <Avatar className="h-10 w-10 shrink-0">
+        <Avatar className="h-10 w-10 shrink-0 border bg-background">
           <AvatarImage src={profileImageUrl} />
           <AvatarFallback>{username[0]}</AvatarFallback>
         </Avatar>
-        <div className="flex-1 space-y-2">
+        <div className="flex-1 space-y-1">
           <div className="flex items-center gap-2">
             <span className="font-semibold">{username}</span>
             <span className="text-sm text-muted-foreground">{timeAgo}</span>
           </div>
           <p>{content}</p>
-          <div className="flex items-center gap-4 text-sm">
-            <button
-              onClick={() => setReplyingTo(id)}
-              className="text-muted-foreground hover:text-foreground"
-            >
+          <div className="flex items-center gap-4 pt-1">
+            <button onClick={() => setReplyingTo(id)} className="text-sm text-muted-foreground hover:text-foreground">
               답글
             </button>
           </div>
         </div>
       </div>
-      
+
       {replyingTo === id && <ReplyForm parentId={id} />}
-      
+
       {replies.length > 0 && (
         <div className="ml-12 space-y-4">
           {replies.map((reply) => (
@@ -122,6 +121,7 @@ export function Comment({
           ))}
         </div>
       )}
+      {!isLast && <div className="absolute left-5 top-14 bottom-0 w-0.5 bg-accent" />}
     </div>
   )
 }

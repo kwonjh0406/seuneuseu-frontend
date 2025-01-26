@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 interface PostResponse {
   postId: number;
@@ -61,6 +62,8 @@ export default function Home() {
         {/* 메인 페이지 상단바 */}
         <header className="sticky top-0 z-40 flex items-center justify-between px-4 h-14 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <h1 className="text-xl font-semibold">홈</h1>
+          <div className="flex items-center space-x-2">
+            <ThemeToggle />
           {loggedInUsername ? (
             <Link href="/logout" prefetch={false} passHref>
               <Button>로그아웃</Button>
@@ -70,6 +73,7 @@ export default function Home() {
               <Button>로그인</Button>
             </Link>
           )}
+          </div>
         </header>
 
         {/* 게시글 목록 */}
@@ -97,3 +101,6 @@ export default function Home() {
     </div>
   )
 }
+
+
+
