@@ -1,4 +1,4 @@
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { Inter } from 'next/font/google'
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
@@ -10,7 +10,12 @@ export const metadata: Metadata = {
   description: "새로운 소통의 시작, 여러분의 생각을 공유하세요",
 }
 
-export const viewport = 'width=device-width, initial-scale=1, user-scalable=no';
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+}
 
 export default function RootLayout({
   children,
