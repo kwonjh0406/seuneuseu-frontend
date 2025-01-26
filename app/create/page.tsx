@@ -59,7 +59,7 @@ export default function CreatePage() {
 
       // Compression
       const options = {
-        maxSizeMB: 2,
+        maxSizeMB: 0.5,
         maxWidthOrHeight: 1920,
         useWebWorker: true,
         fileType: 'image/jpeg'
