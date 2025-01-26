@@ -10,10 +10,14 @@ import { ImageCarousel } from "@/components/image-carousel"
 import axios from "axios"
 
 export default function CreatePage() {
-
+  const router = useRouter()
   const [loggedInUsername, setLoggedInUsername] = useState<string | null>(null);
+  const [content, setContent] = useState("")
+  const [imageUrls, setImageUrls] = useState<string[]>([])
+  const [processedFiles, setProcessedFiles] = useState<File[]>([])
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const maxLength = 500
 
-  // 클라이언트의 세션을 조회, 존재한다면 사용자의 아이디를 받아옴, 존재하지 않는다면 로그인 페이지로 이동
   useEffect(() => {
     const checkSession = async () => {
       try {
@@ -31,22 +35,71 @@ export default function CreatePage() {
     checkSession();
   }, []);
 
-  const router = useRouter()
-  const [content, setContent] = useState("")
-  const [imageUrls, setImageUrls] = useState<string[]>([])
-  const fileInputRef = useRef<HTMLInputElement>(null)
-  const maxLength = 500
+  const processImage = async (file: File) => {
+    try {
+      // Dynamically import the libraries only when needed (client-side)
+      const [{ default: imageCompression }, { heicTo }] = await Promise.all([
+        import('browser-image-compression'),
+        import('heic-to')
+      ])
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+      let processedFile = file
+      const originalFileName = file.name
+
+      // HEIC conversion
+      if (file.name.toLowerCase().endsWith('.heic')) {
+        const blob = await heicTo({
+          blob: file,
+          type: "image/jpeg",
+        })
+        processedFile = new File([blob], originalFileName.replace('.heic', '.jpg'), {
+          type: 'image/jpeg'
+        })
+      }
+
+      // Compression
+      const options = {
+        maxSizeMB: 2,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true,
+        fileType: 'image/jpeg'
+      }
+
+      const compressedBlob = await imageCompression(processedFile, options)
+
+      return new File(
+        [compressedBlob],
+        processedFile.name,
+        { type: 'image/jpeg' }
+      )
+    } catch (error) {
+      console.error('Image processing error:', error)
+      throw error
+    }
+  }
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
     if (files) {
-      const newImageUrls = Array.from(files).map(file => URL.createObjectURL(file))
-      setImageUrls(prev => [...prev, ...newImageUrls])
+      try {
+        const fileArray = Array.from(files)
+        const processedFiles = await Promise.all(fileArray.map(processImage))
+
+        // Create preview URLs
+        const newImageUrls = processedFiles.map(file => URL.createObjectURL(file))
+
+        // Update state
+        setImageUrls(prev => [...prev, ...newImageUrls])
+        setProcessedFiles(prev => [...prev, ...processedFiles])
+      } catch (error) {
+        alert('이미지 업로드 중 오류가 발생했습니다.')
+      }
     }
   }
 
   const removeImage = (index: number) => {
     setImageUrls(prev => prev.filter((_, i) => i !== index))
+    setProcessedFiles(prev => prev.filter((_, i) => i !== index))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -54,22 +107,20 @@ export default function CreatePage() {
 
     try {
       const formData = new FormData();
-      formData.append("content", content); // 텍스트 데이터 추가
+      formData.append("content", content);
 
-      // 파일 추가
-      if (fileInputRef.current?.files) {
-        Array.from(fileInputRef.current.files).forEach((file) => {
-          formData.append("images", file); // 다중 이미지 업로드
-        });
-      }
+      // Add processed files
+      processedFiles.forEach((file) => {
+        formData.append("images", file);
+      });
 
-      const response = await axios.post(
+      await axios.post(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/post`,
         formData,
         {
           withCredentials: true,
           headers: {
-            "Content-Type": "multipart/form-data", // Multipart 전송
+            "Content-Type": "multipart/form-data",
           },
         }
       );
@@ -94,15 +145,11 @@ export default function CreatePage() {
         <div className="max-w-[640px] mx-auto p-4">
           <div className="bg-card rounded-lg p-3">
             <div className="flex items-start space-x-4">
-              {/* <Avatar className="w-10 h-10">
-                <AvatarImage src="/placeholder.svg" />
-                <AvatarFallback>U</AvatarFallback>
-              </Avatar> */}
               <div className="flex-1 min-w-0 space-y-4">
                 <Textarea
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
-                  placeholder="&quot;오늘은 어떤 이야기를 나누고 싶나요? 무엇이든 써보세요!&quot;"
+                  placeholder="오늘은 어떤 이야기를 나누고 싶나요? 무엇이든 써보세요!"
                   className="min-h-[150px] resize-none border-0 bg-transparent focus-visible:ring-0 text-base p-0"
                   maxLength={maxLength}
                 />
@@ -147,4 +194,3 @@ export default function CreatePage() {
     </div>
   )
 }
-
