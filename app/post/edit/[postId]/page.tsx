@@ -12,6 +12,7 @@ import axios from "axios"
 
 export default function CreatePage() {
 
+  const { postId } = useParams();
   const [loggedInUsername, setLoggedInUsername] = useState<string | null>(null);
 
   // 로그인 된 사용자의 세션을 조회, 존재한다면 사용자의 username(아이디)을 받아옴
@@ -34,7 +35,7 @@ export default function CreatePage() {
     checkSession();
   }, []);
 
-  const { postId } = useParams();
+
 
   const router = useRouter()
   const [content, setContent] = useState("")
@@ -44,7 +45,7 @@ export default function CreatePage() {
   useEffect(() => {
     const fetchPostData = async () => {
       try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/post/edit/${postId}`, {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/edit/${postId}`, {
           withCredentials: true,
         })
         const { content, images } = response.data.data
@@ -60,10 +61,9 @@ export default function CreatePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-  
     try {
-      const response = await axios.patch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/post/edit/${postId}`,
+      await axios.patch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${postId}`,
         { content },
         {
           withCredentials: true,
@@ -72,20 +72,16 @@ export default function CreatePage() {
           },
         }
       );
-  
-      if (response.status === 200) {
-        alert("게시글이 성공적으로 수정되었습니다.");
-        router.push("/"); // 수정 완료 후 메인 페이지로 이동
-      } else {
-        console.error("게시글 수정 실패:", response.data);
-        alert("게시글 수정 중 문제가 발생했습니다. 다시 시도해주세요.");
-      }
+      router.push("/"); // 수정 완료 후 메인 페이지로 이동
     } catch (error) {
-      console.error("서버 요청 중 오류:", error);
-      alert("서버와 통신하는 중 문제가 발생했습니다.");
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          alert(error.response.data.message || "오류가 발생했습니다.")
+        }
+      }
     }
   };
-  
+
 
   return (
 
@@ -105,24 +101,19 @@ export default function CreatePage() {
         <div className="max-w-[640px] mx-auto p-4">
           <div className="bg-card rounded-lg p-3">
             <div className="flex items-start space-x-4">
-              <Avatar className="w-10 h-10">
-                <AvatarImage src="/placeholder.svg" />
-                <AvatarFallback>U</AvatarFallback>
-              </Avatar>
               <div className="flex-1 min-w-0 space-y-4">
                 <Textarea
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
-                  placeholder="Start a thread..."
                   className="min-h-[150px] resize-none border-0 bg-transparent focus-visible:ring-0 text-base p-0"
                   maxLength={maxLength}
                 />
                 {imageUrls.length > 0 && (
-                  <ImageCarousel images={imageUrls}/>
+                  <ImageCarousel images={imageUrls} />
                 )}
                 <div className="flex items-center justify-between pt-4 border-t">
                   <div className="flex items-center space-x-2">
-                    
+
                     {content.length > maxLength * 0.8 && (
                       <div className="flex items-center text-amber-500 text-sm">
                         <AlertCircle className="h-4 w-4 mr-1" />
@@ -140,7 +131,7 @@ export default function CreatePage() {
             </div>
           </div>
           <div className="mt-6 text-center text-sm text-muted-foreground">
-            <p>당신의 게시물은 누구나 볼 수 있습니다.</p>
+            <p>사진은 수정할 수 없습니다.</p>
             <p className="mt-2">게시물의 내용은 최대 500자까지 작성할 수 있습니다.</p>
           </div>
         </div>
