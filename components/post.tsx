@@ -55,8 +55,7 @@ export function Post({
   };
 
   return (
-
-    <div className="relative flex gap-4 px-6 py-4 bg-card group hover:bg-accent/5 transition-colors">
+    <div className="relative flex gap-4 p-3 md:px-4 md:py-4 bg-card group hover:bg-accent/5 transition-colors">
       {/* <div className="relative flex gap-4 px-6 py-4 bg-card group hover:bg-accent/5 transition-colors max-w-full overflow-x-auto"> */}
       {/* Avatar column with connecting line */}
 
@@ -95,7 +94,7 @@ export function Post({
                   수정
                 </Button>
                 </Link>
-                <Button variant="ghost" className="w-full justify-start text-destructive dark:text-red-500" onClick={() => setIsDeleteDialogOpen(true)}>
+                <Button variant="ghost" className="w-full justify-start text-destructive" onClick={() => setIsDeleteDialogOpen(true)}>
                   삭제
                 </Button>
               </PopoverContent>
