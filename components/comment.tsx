@@ -137,13 +137,16 @@ export function Comment({
           {replies.map((reply) => (
             <div key={reply.id} className="space-y-2">
               <div className="flex gap-3">
-                <Avatar className="h-8 w-8 shrink-0">
-                  <AvatarImage src={reply.profileImageUrl} />
-                  <AvatarFallback>{reply.username[0]}</AvatarFallback>
-                </Avatar>
+                <Link href={`/${reply.username}`} passHref>
+                  <Avatar className="h-8 w-8 shrink-0">
+                    <AvatarImage src={reply.profileImageUrl} />
+                    <AvatarFallback>{reply.username[0]}</AvatarFallback>
+                  </Avatar>
+                </Link>
                 <div className="flex-1 space-y-1">
                   <div className="flex items-center gap-2">
-                    <span className="font-semibold">{reply.username}</span>
+                    <Link href={`/${reply.username}`} passHref><span className="font-semibold truncate">{reply.name}</span></Link>
+                    <span className="text-muted-foreground">·</span>
                     <span className="text-sm text-muted-foreground">{reply.timeAgo}</span>
                   </div>
                   <p>{reply.content}</p>
