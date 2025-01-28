@@ -154,7 +154,7 @@ export function Comment({
                     >
                       답글
                     </button>
-                    {loggedInUsername === username && (
+                    {loggedInUsername === reply.username && (
                       <button
                         onClick={() => {
                           setIsDeleteDialogOpen(true);

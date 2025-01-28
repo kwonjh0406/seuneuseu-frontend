@@ -94,7 +94,7 @@ export function Post({
                   수정
                 </Button>
                 </Link>
-                <Button variant="ghost" className="w-full justify-start text-destructive" onClick={() => setIsDeleteDialogOpen(true)}>
+                <Button variant="ghost" className="w-full justify-start text-destructive dark:text-red-500" onClick={() => setIsDeleteDialogOpen(true)}>
                   삭제
                 </Button>
               </PopoverContent>
