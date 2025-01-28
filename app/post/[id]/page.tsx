@@ -159,6 +159,17 @@ export default function PostPage() {
     }
   };
 
+  const handleDeleteComment = async (commentId: string) => {
+    try {
+      await axios.delete(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${postId}/comments/${commentId}`, {
+        withCredentials: true,
+      })
+      window.location.reload();
+    } catch (error) {
+      console.error("Failed to delete comment:", error)
+    }
+  }
+
   const commentHierarchy = getCommentHierarchy(comments);
 
   return (
@@ -248,7 +259,9 @@ export default function PostPage() {
                   {...comment}
                   replies={comment.replies || []}
                   onReply={handleReply}
+                  onDelete={handleDeleteComment}
                   isLast={index === commentHierarchy.length - 1}
+                  loggedInUsername={loggedInUsername}
                 />
               ))}
             </div>

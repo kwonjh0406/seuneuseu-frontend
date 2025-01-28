@@ -2,6 +2,7 @@ import { useState } from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "./ui/dialog"
 
 interface CommentType {
   id: string
@@ -16,10 +17,13 @@ interface CommentType {
 interface CommentProps extends CommentType {
   replies: CommentType[]
   onReply: (commentId: string, content: string) => void
+  onDelete: (commentId: string) => void
   isLast: boolean
+  loggedInUsername: string | null
 }
 
 export function Comment({
+  loggedInUsername,
   id,
   username,
   profileImageUrl,
@@ -27,9 +31,11 @@ export function Comment({
   content,
   replies,
   onReply,
+  onDelete,
   isLast
 }: CommentProps) {
   const [replyingTo, setReplyingTo] = useState<string | null>(null)
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
 
   const ReplyForm = ({ parentId }: { parentId: string }) => {
     const [replyContent, setReplyContent] = useState("")
@@ -68,6 +74,11 @@ export function Comment({
     )
   }
 
+  const handleDelete = () => {
+    onDelete(id)
+    setIsDeleteDialogOpen(false)
+  }
+
   return (
     <div className="space-y-4 relative">
       <div className="flex gap-3">
@@ -85,6 +96,11 @@ export function Comment({
             <button onClick={() => setReplyingTo(id)} className="text-sm text-muted-foreground hover:text-foreground">
               답글
             </button>
+            {loggedInUsername === username && (
+              <button onClick={() => setIsDeleteDialogOpen(true)} className="text-sm text-muted-foreground hover:text-foreground">
+                삭제
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -122,6 +138,22 @@ export function Comment({
         </div>
       )}
       {!isLast && <div className="absolute left-5 top-14 bottom-0 w-0.5 bg-accent" />}
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>댓글 삭제</DialogTitle>
+            <DialogDescription>정말로 이 댓글을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.</DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
+              취소
+            </Button>
+            <Button variant="destructive" onClick={handleDelete}>
+              삭제
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
