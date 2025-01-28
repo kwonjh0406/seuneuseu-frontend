@@ -9,6 +9,7 @@ import { useEffect, useState } from "react"
 import axios from "axios"
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import { Gallery } from "@/components/gallery";
 
 interface PostResponseDto {
   postId: number;
@@ -83,7 +84,7 @@ export default function ProfilePage() {
     <div className="flex min-h-screen bg-background">
       <Sidebar username={loggedInUsername} />
       <main className="flex-1 md:ml-[72px] lg:ml-[245px] mb-16 md:mb-0">
-        <header className="sticky top-0 z-40 flex items-center justify-between px-4 h-14 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <header className="sticky top-0 z-40 flex items-center justify-between px-4 h-14 border-b bg-background">
           <div className="flex items-center gap-4">
             <h1 className="text-xl font-semibold">{'@' + userProfile?.username || "Unknown User"}</h1>
           </div>
@@ -100,9 +101,9 @@ export default function ProfilePage() {
 
         <div className="max-w-[640px] mx-auto">
           <ProfileHeader {...userProfile} loggedInUsername={loggedInUsername} />
-
+          
           <Tabs defaultValue="threads" className="mt-4">
-            <TabsList className="w-full justify-start h-12 p-0 bg-transparent border-b rounded-none">
+            <TabsList className="w-full justify-start h-12 p-0 border-b rounded-none sticky top-14 z-10 bg-background">
               <TabsTrigger
                 value="threads"
                 className="flex-1 h-full rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:shadow-none"
@@ -110,10 +111,10 @@ export default function ProfilePage() {
                 게시물
               </TabsTrigger>
               <TabsTrigger
-                value="replies"
+                value="gallery"
                 className="flex-1 h-full rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:shadow-none"
               >
-                답글
+                갤러리
               </TabsTrigger>
             </TabsList>
             <TabsContent value="threads" className="mt-0">
@@ -136,10 +137,8 @@ export default function ProfilePage() {
                 ))}
               </div>
             </TabsContent>
-            <TabsContent value="replies" className="mt-0">
-              <div className="p-4 text-center text-muted-foreground">
-                No replies yet
-              </div>
+            <TabsContent value="gallery" className="mt-0">
+              <Gallery username={username} />
             </TabsContent>
           </Tabs>
         </div>

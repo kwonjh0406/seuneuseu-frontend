@@ -88,7 +88,7 @@ export default function NotificationsPage() {
                     )}
                 </header>
 
-                <div className="max-w-[640px] mx-auto">
+                {/* <div className="max-w-[640px] mx-auto">
                     {notifications.length > 0 ? (
                         <div className="divide-y">
                             {notifications.map((notification) => (
@@ -106,7 +106,7 @@ export default function NotificationsPage() {
                             </p>
                         </div>
                     )}
-                </div>
+                </div> */}
             </main>
         </div>
     )

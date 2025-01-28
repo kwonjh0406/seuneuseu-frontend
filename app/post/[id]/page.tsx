@@ -163,7 +163,7 @@ export default function PostPage() {
 
   return (
     <div className="flex min-h-screen bg-background">
-      <Sidebar username="asdf" />
+      <Sidebar username={loggedInUsername} />
       <main className="flex-1 md:ml-[72px] lg:ml-[245px] mb-16 md:mb-0">
         <header className="sticky top-0 z-40 flex items-center justify-between px-4 h-14 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <h1 className="text-xl font-semibold">게시물</h1>

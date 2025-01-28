@@ -5,6 +5,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 import Link from "next/link"
 import axios from "axios"
 import { ImageGallery } from "./image-garllery"
+import { useState } from "react"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "./ui/dialog"
 
 interface PostProps {
   loggedInUsername: string | null
@@ -34,6 +36,8 @@ export function Post({
   isLast
 }: PostProps) {
 
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
+
   const handleDelete = async () => {
     try {
       const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${postId}`, {
@@ -47,6 +51,7 @@ export function Post({
     } catch (error) {
       console.error('Error deleting post:', error);
     }
+    setIsDeleteDialogOpen(false)
   };
 
   return (
@@ -90,7 +95,7 @@ export function Post({
                   수정
                 </Button>
                 </Link>
-                <Button variant="ghost" className="w-full justify-start text-destructive" onClick={handleDelete}>
+                <Button variant="ghost" className="w-full justify-start text-destructive" onClick={() => setIsDeleteDialogOpen(true)}>
                   삭제
                 </Button>
               </PopoverContent>
@@ -123,6 +128,22 @@ export function Post({
           </Link>
         </div>
       </div>
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>게시글 삭제</DialogTitle>
+            <DialogDescription>정말로 이 게시글을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.</DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
+              취소
+            </Button>
+            <Button variant="destructive" onClick={handleDelete}>
+              삭제
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
