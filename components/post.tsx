@@ -95,7 +95,7 @@ export function Post({
                   수정
                 </Button>
                 </Link>
-                <Button variant="ghost" className="w-full justify-start text-destructive" onClick={() => setIsDeleteDialogOpen(true)}>
+                <Button variant="ghost" className="w-full justify-start text-destructive dark:text-red-500" onClick={() => setIsDeleteDialogOpen(true)}>
                   삭제
                 </Button>
               </PopoverContent>
@@ -129,18 +129,20 @@ export function Post({
         </div>
       </div>
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-[425px] w-[90%] max-w-[90%] rounded-lg">
           <DialogHeader>
             <DialogTitle>게시글 삭제</DialogTitle>
-            <DialogDescription>정말로 이 게시글을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.</DialogDescription>
+            <DialogDescription>정말로 이 게시글을 삭제하시겠습니까?</DialogDescription>
           </DialogHeader>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
-              취소
-            </Button>
-            <Button variant="destructive" onClick={handleDelete}>
-              삭제
-            </Button>
+          <DialogFooter className="sm:justify-start">
+            <div className="w-full flex flex-col-reverse sm:flex-row sm:justify-end gap-2">
+              <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)} className="sm:w-auto w-full">
+                취소
+              </Button>
+              <Button variant="destructive" onClick={handleDelete} className="sm:w-auto w-full">
+                삭제
+              </Button>
+            </div>
           </DialogFooter>
         </DialogContent>
       </Dialog>

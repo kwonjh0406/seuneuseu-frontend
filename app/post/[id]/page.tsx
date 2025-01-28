@@ -19,6 +19,8 @@ interface CommentType {
   timeAgo: string
   content: string
   likes: number
+  string: string
+  name: string
   replies?: CommentType[]
 }
 
@@ -197,22 +199,18 @@ export default function PostPage() {
             isLast={true}
           />
 
-          <div className="my-6 border-t border-border" />
+          <div className="mb-6 border-t border-border" />
 
           <div className="mt-4 mb-6 px-6">
           <h2 className="text-lg font-semibold mb-4">댓글</h2>
             {loggedInUsername && (
               <form onSubmit={handleSubmitComment} className="mb-8">
                 <div className="flex gap-3">
-                  {/* <Avatar className="h-10 w-10 shrink-0">
-        <AvatarImage src="/placeholder.svg" />
-        <AvatarFallback>U</AvatarFallback>
-      </Avatar> */}
                   <div className="flex-1 min-w-0">
                     <Textarea
                       value={commentContent}
                       onChange={(e) => setCommentContent(e.target.value)}
-                      placeholder={replyToId ? "답글 작성하기..." : "댓글 작성하기..."}
+                      placeholder="댓글 작성하기..."
                       className="min-h-[40px] max-h-[120px] resize-none border-0 bg-transparent p-0 focus-visible:ring-0 text-[15px]"
                     />
                     <div className="flex justify-end items-center mt-2 border-t pt-2">
@@ -226,26 +224,6 @@ export default function PostPage() {
                         게시
                       </Button>
                     </div>
-
-                    {/* <div className="flex-1 min-w-0 space-y-3">
-                    <Textarea
-                      value={commentContent}
-                      onChange={(e) => setCommentContent(e.target.value)}
-                      placeholder={replyToId ? "답글 작성하기..." : "댓글 작성하기..."}
-                      className="min-h-[80px] resize-none border-none bg-muted focus-visible:ring-1 focus-visible:ring-primary"
-                    />
-                    <div className="flex justify-end gap-2">
-                      {replyToId && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => setReplyToId(null)}
-                        >
-                          취소
-                        </Button>
-                      )}
-                      <Button type="submit" disabled={!commentContent.trim()} size="sm">게시</Button>
-                    </div> */}
                   </div>
                 </div>
               </form>
