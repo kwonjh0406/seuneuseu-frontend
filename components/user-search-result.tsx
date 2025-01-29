@@ -14,12 +14,13 @@ export function UserSearchResult({
 }: UserSearchResultProps) {
   return (
     <Link href={`/${username}`}>
-      <div className="flex items-center gap-4 py-2">
-        <Avatar className="h-12 w-12">
+      <div className="flex items-center gap-4 py-4">
+        <Avatar className="h-12 w-12 shrink-0 border bg-background">
           <AvatarImage src={profileImageUrl} />
           <AvatarFallback>
             <img src="https://www.gravatar.com/avatar/?d=mp" />
           </AvatarFallback>
+
         </Avatar>
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between">
