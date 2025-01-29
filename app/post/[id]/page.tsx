@@ -199,12 +199,12 @@ export default function PostPage() {
             isLast={true}
           />
 
-          <div className="mb-6 border-t border-border" />
+          <div className="border-t border-border" />
 
           <div className="mt-4 mb-6 px-6">
           <h2 className="text-lg font-semibold mb-4">댓글</h2>
             {loggedInUsername && (
-              <form onSubmit={handleSubmitComment} className="mb-8">
+              <form onSubmit={handleSubmitComment} className="mb-4">
                 <div className="flex gap-3">
                   <div className="flex-1 min-w-0">
                     <Textarea
@@ -216,9 +216,9 @@ export default function PostPage() {
                     <div className="flex justify-end items-center mt-2 border-t pt-2">
                       <Button
                         type="submit"
-                        variant="ghost"
-                        size="sm"
-                        className={`font-semibold ${!commentContent.trim() ? "text-primary/50" : "text-primary"}`}
+                        // variant="ghost"
+                        // size="sm"
+                        // className={`font-semibold ${!commentContent.trim() ? "text-primary/50" : "text-primary"}`}
                         disabled={!commentContent.trim()}
                       >
                         게시
