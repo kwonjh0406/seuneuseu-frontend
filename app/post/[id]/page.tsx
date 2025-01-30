@@ -201,7 +201,7 @@ export default function PostPage() {
 
           <div className="border-t border-border" />
 
-          <div className="mt-4 mb-6 px-6">
+          <div className="mt-4 mb-12 px-6">
           <h2 className="text-lg font-semibold mb-4">댓글</h2>
             {loggedInUsername && (
               <form onSubmit={handleSubmitComment} className="mb-4">

@@ -56,9 +56,6 @@ export function Post({
 
   return (
     <div className="relative flex gap-4 p-3 md:px-4 md:py-4 bg-card group hover:bg-accent/5 transition-colors">
-      {/* <div className="relative flex gap-4 px-6 py-4 bg-card group hover:bg-accent/5 transition-colors max-w-full overflow-x-auto"> */}
-      {/* Avatar column with connecting line */}
-
       <div className="relative flex flex-col items-center">
         <Link href={`/${username}`} passHref>
           <Avatar className="h-10 w-10 shrink-0 border bg-background">
@@ -102,9 +99,11 @@ export function Post({
           )}
         </div>
 
+        <Link href={`/post/${postId}`} passHref>
         <p className="mt-0.5 text-[0.9375rem] break-all whitespace-pre-wrap">
           {content}
         </p>
+        </Link>
 
         {imageUrls && imageUrls.length > 0 && (
           <div className="mt-3">
