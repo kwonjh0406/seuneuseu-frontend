@@ -41,7 +41,7 @@ export default function SearchPage() {
     const fetchUsers = async () => {
       setLoading(true)
       try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/search`)
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users/search`)
         setAllUsers(response.data.data)  // 응답 데이터로 전체 유저 목록 저장
         setSearchResults(response.data.data)  // 검색결과에 초기 유저 목록을 그대로 설정
       } catch (error) {

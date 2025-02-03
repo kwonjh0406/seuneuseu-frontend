@@ -33,7 +33,7 @@ const [initialProfile, setInitialProfile] = useState({
 useEffect(() => {
   const fetchProfileData = async () => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/me/profile`, {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users/me/profile`, {
         withCredentials: true,
       })
       const { data } = response.data
@@ -88,7 +88,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 
   try {
     const response = await axios.patch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/me/profile`,
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users/me/profile`,
       formData,
       {
         withCredentials: true,

@@ -1,6 +1,11 @@
+'use client'
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
+import axios from "axios"
 import Link from "next/link"
+import { useParams } from "next/navigation"
+import { useEffect, useState } from "react"
 
 interface ProfileHeaderProps {
   username: string
@@ -23,6 +28,44 @@ export function ProfileHeader({
   createdAt,
   loggedInUsername
 }: ProfileHeaderProps) {
+
+  const [isFollowing, setIsFollowing] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const checkFollowStatus = async () => {
+      try {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users/${username}/follow`, {
+          withCredentials: true,
+        });
+        setIsFollowing(response.data.data.follow);
+      } catch (error) {
+        console.error("팔로우 상태 확인 실패:", error);
+      }
+    };
+    checkFollowStatus();
+  }, [username]);
+
+  const handleFollow = async () => {
+    try {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users/${username}/follow`, {}, {
+        withCredentials: true,
+      });
+      setIsFollowing(true);
+    } catch (error) {
+    }
+  };
+
+  const handleUnFollow = async () => {
+    try {
+      const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users/${username}/follow`, {
+        withCredentials: true,
+      });
+      setIsFollowing(false);
+    } catch (error) {
+    }
+  };
+
+
   return (
     <div className="px-4 py-6">
       <div className="flex justify-between items-start">
@@ -52,12 +95,16 @@ export function ProfileHeader({
       <div className="flex gap-2 mt-4">
         {loggedInUsername === username ? (
           <Link href="/profile/edit" passHref className="flex-1 w-full">
-          <Button variant="outline" className="w-full">프로필 편집</Button>
-        </Link>
+            <Button variant="outline" className="w-full">프로필 편집</Button>
+          </Link>
         ) : (
-          <>
-            <Button className="flex-1">팔로우</Button>
-          </>
+          isFollowing === null ? (
+            <Link href="/login" passHref className="flex-1 w-full" prefetch={false}><Button className="w-full">팔로우</Button></Link>
+          ) : isFollowing ? (
+            <Button variant="outline" className="flex-1 w-full" onClick={handleUnFollow}>팔로우 취소</Button>
+          ) : (
+            <Button className="flex-1 w-full" onClick={handleFollow}>팔로우</Button>
+          )
         )}
       </div>
     </div>

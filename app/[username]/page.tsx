@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 import { Sidebar } from "@/components/sidebar"
 import { Post } from "@/components/post"
@@ -48,10 +48,10 @@ export default function ProfilePage() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/profile/${username}`, {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users/${username}/profile`, {
           withCredentials: true,
         });
-        setUserProfile(response.data);
+        setUserProfile(response.data.data);
       } catch (error) {
         console.error('Failed to fetch profile:', error);
       }
