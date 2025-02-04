@@ -5,10 +5,11 @@ import { Post } from "@/components/post";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState, useRef, useCallback } from "react";
 import axios from "axios";
-import Link from "next/link";
+import useLoggedInUsername from "@/hooks/useLoggedInUsername";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { TabsContent } from "@radix-ui/react-tabs";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Header } from "@/components/header";
 
 interface PostResponse {
   postId: number;
@@ -23,7 +24,8 @@ interface PostResponse {
 }
 
 export default function Home() {
-  const [loggedInUsername, setLoggedInUsername] = useState<string | null>(null);
+  const loggedInUsername = useLoggedInUsername(); // 로그인 중인 사용자 아이디를 가져옴
+
   const [posts, setPosts] = useState<PostResponse[]>([]);
   const [page, setPage] = useState(0); // 현재 페이지 번호
   const [isFetching, setIsFetching] = useState(false); // 데이터 로딩 상태
@@ -31,19 +33,6 @@ export default function Home() {
   const observerRef = useRef<HTMLDivElement | null>(null);
 
   const [followingPosts, setFollowingPosts] = useState<PostResponse[]>([]);
-
-  // 로그인된 사용자의 세션을 조회
-  useEffect(() => {
-    const checkSession = async () => {
-      try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users/me/username`, {
-          withCredentials: true,
-        });
-        setLoggedInUsername(response.data.username);
-      } catch (error) { }
-    };
-    checkSession();
-  }, []);
 
   // 게시글 가져오기 (페이지네이션 적용)
   const fetchPosts = useCallback(async () => {
@@ -104,21 +93,7 @@ export default function Home() {
       <main className="flex-1 md:ml-[72px] lg:ml-[245px] mb-16 md:mb-0">
         {/* 메인 페이지 상단바 */}
         {/* <header className="sticky top-0 z-40 flex items-center justify-between px-4 h-14 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/85"> */}
-        <header className="sticky top-0 z-40 flex items-center justify-between px-4 h-14 border-b bg-background">
-          <h1 className="text-xl font-semibold">홈</h1>
-          <div className="flex items-center space-x-2">
-            <ThemeToggle />
-            {loggedInUsername ? (
-              <Link href="/logout" prefetch={false} passHref>
-                <Button>로그아웃</Button>
-              </Link>
-            ) : (
-              <Link href="/login" passHref>
-                <Button>로그인</Button>
-              </Link>
-            )}
-          </div>
-        </header>
+        <Header title="홈" loggedInUsername={loggedInUsername} />
 
         {/* 게시글 목록 */}
         <div className="max-w-[640px] mx-auto">
