@@ -7,6 +7,8 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import axios from "axios";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { TabsContent } from "@radix-ui/react-tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface PostResponse {
   postId: number;
@@ -27,6 +29,8 @@ export default function Home() {
   const [isFetching, setIsFetching] = useState(false); // 데이터 로딩 상태
   const [hasMore, setHasMore] = useState(true); // 추가 데이터 여부
   const observerRef = useRef<HTMLDivElement | null>(null);
+
+  const [followingPosts, setFollowingPosts] = useState<PostResponse[]>([]);
 
   // 로그인된 사용자의 세션을 조회
   useEffect(() => {
@@ -62,6 +66,20 @@ export default function Home() {
     setIsFetching(false);
   }, [isFetching, hasMore, page]);
 
+  useEffect(() => {
+    const fetchFollowingPosts = async () => {
+      try {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users/me/following/posts`, {
+          withCredentials: true,
+        });
+        setFollowingPosts(response.data.data); // 게시물 배열
+      } catch (error) {
+        console.error('Failed to fetch posts:', error);
+      }
+    };
+    fetchFollowingPosts();
+  }, [])
+
   // Intersection Observer 설정 (마지막 게시글 감지)
   useEffect(() => {
     if (!observerRef.current || !hasMore) return;
@@ -85,7 +103,8 @@ export default function Home() {
 
       <main className="flex-1 md:ml-[72px] lg:ml-[245px] mb-16 md:mb-0">
         {/* 메인 페이지 상단바 */}
-        <header className="sticky top-0 z-40 flex items-center justify-between px-4 h-14 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        {/* <header className="sticky top-0 z-40 flex items-center justify-between px-4 h-14 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/85"> */}
+        <header className="sticky top-0 z-40 flex items-center justify-between px-4 h-14 border-b bg-background">
           <h1 className="text-xl font-semibold">홈</h1>
           <div className="flex items-center space-x-2">
             <ThemeToggle />
@@ -104,22 +123,83 @@ export default function Home() {
         {/* 게시글 목록 */}
         <div className="max-w-[640px] mx-auto">
           <div className="divide-y">
-            {posts.map((post, index) => (
-              <Post
-                key={post.postId}
-                loggedInUsername={loggedInUsername}
-                postId={post.postId}
-                content={post.content}
-                imageUrls={post.imageUrls}
-                likes={post.likes}
-                replies={post.replies}
-                timeAgo={post.timeAgo}
-                username={post.username}
-                name={post.name}
-                profileImageUrl={post.profileImageUrl}
-                isLast={index === posts.length - 1}
-              />
-            ))}
+            {loggedInUsername ? (
+              <Tabs defaultValue="home">
+              <TabsList className="w-full justify-start h-12 p-0 border-b rounded-none sticky top-14 z-10 bg-background">
+                <TabsTrigger
+                  value="home"
+                  className="flex-1 h-full rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:shadow-none"
+                >
+                  전체
+                </TabsTrigger>
+                <TabsTrigger
+                  value="following"
+                  className="flex-1 h-full rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:shadow-none"
+                >
+                  팔로잉
+                </TabsTrigger>
+              </TabsList>
+              <TabsContent value="home" className="mt-0">
+                <div className="divide-y">
+                  {posts.map((post, index) => (
+                    <Post
+                      key={post.postId}
+                      postId={post.postId}
+                      loggedInUsername={loggedInUsername}
+                      profileImageUrl={post.profileImageUrl}
+                      timeAgo={post.timeAgo}
+                      username={post.username}
+                      name={post.name}
+                      content={post.content}
+                      imageUrls={post.imageUrls}
+                      likes={post.likes}
+                      replies={post.replies}
+                      isLast={index === posts.length - 1}
+                    />
+                  ))}
+                </div>
+              </TabsContent>
+              <TabsContent value="following" className="mt-0">
+                <div className="divide-y">
+                  {followingPosts.map((post, index) => (
+                    <Post
+                      key={post.postId}
+                      postId={post.postId}
+                      loggedInUsername={loggedInUsername}
+                      profileImageUrl={post.profileImageUrl}
+                      timeAgo={post.timeAgo}
+                      username={post.username}
+                      name={post.name}
+                      content={post.content}
+                      imageUrls={post.imageUrls}
+                      likes={post.likes}
+                      replies={post.replies}
+                      isLast={index === posts.length - 1}
+                    />
+                  ))}
+                </div>
+              </TabsContent>
+            </Tabs>
+            ) : (
+              <div className="divide-y">
+                {posts.map((post, index) => (
+                  <Post
+                    key={post.postId}
+                    postId={post.postId}
+                    loggedInUsername={loggedInUsername}
+                    profileImageUrl={post.profileImageUrl}
+                    timeAgo={post.timeAgo}
+                    username={post.username}
+                    name={post.name}
+                    content={post.content}
+                    imageUrls={post.imageUrls}
+                    likes={post.likes}
+                    replies={post.replies}
+                    isLast={index === posts.length - 1}
+                  />
+                ))}
+              </div>
+            )}
           </div>
           <div ref={observerRef} className="h-10" /> {/* 감지용 div */}
           {isFetching && <p className="text-center text-gray-500 py-4">로딩 중...</p>}
