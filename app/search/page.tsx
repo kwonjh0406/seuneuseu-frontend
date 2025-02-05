@@ -6,8 +6,8 @@ import { Sidebar } from "@/components/sidebar"
 import { UserSearchResult } from "@/components/user-search-result"
 import { Input } from "@/components/ui/input"
 import { Search } from 'lucide-react'
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
+import { Header } from "@/components/header"
+import useLoggedInUsername from "@/hooks/useLoggedInUsername"
 
 // 사용자가 반환할 데이터 타입 정의
 interface SearchUserResponse {
@@ -22,20 +22,8 @@ export default function SearchPage() {
   const [allUsers, setAllUsers] = useState<SearchUserResponse[]>([]) // 전체 유저 목록
   const [loading, setLoading] = useState(false)
 
-  const [loggedInUsername, setLoggedInUsername] = useState<string | null>(null);
+  const loggedInUsername = useLoggedInUsername();
 
-  // 로그인 된 사용자의 세션을 조회, 존재한다면 사용자의 username(아이디)을 받아옴
-  useEffect(() => {
-    const checkSession = async () => {
-      try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users/me/username`, {
-          withCredentials: true,
-        });
-        setLoggedInUsername(response.data.username);
-      } catch (error) { }
-    };
-    checkSession();
-  }, []);
   // 페이지 로딩 시 한 번만 유저 목록을 받아옴
   useEffect(() => {
     const fetchUsers = async () => {
@@ -73,18 +61,7 @@ export default function SearchPage() {
     <div className="flex min-h-screen bg-background">
       <Sidebar username={loggedInUsername}/>
       <main className="flex-1 md:ml-[72px] lg:ml-[245px] mb-16 md:mb-0">
-        <header className="sticky top-0 z-40 flex items-center justify-between px-4 h-14 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-          <h1 className="text-xl font-semibold">검색</h1>
-          {loggedInUsername ? (
-            <Link href="/logout" prefetch={false} passHref>
-              <Button>로그아웃</Button>
-            </Link>
-          ) : (
-            <Link href="/login" passHref>
-              <Button>로그인</Button>
-            </Link>
-          )}
-        </header>
+        <Header title="검색" loggedInUsername={loggedInUsername} />
 
         <div className="max-w-[640px] mx-auto px-4 py-4">
           <div className="relative mb-4">

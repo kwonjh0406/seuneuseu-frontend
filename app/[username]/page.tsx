@@ -10,6 +10,7 @@ import axios from "axios"
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { Gallery } from "@/components/gallery";
+import { Header } from "@/components/header"
 
 interface PostResponseDto {
   postId: number;
@@ -84,25 +85,12 @@ export default function ProfilePage() {
     <div className="flex min-h-screen bg-background">
       <Sidebar username={loggedInUsername} />
       <main className="flex-1 md:ml-[72px] lg:ml-[245px] mb-16 md:mb-0">
-        <header className="sticky top-0 z-40 flex items-center justify-between px-4 h-14 border-b bg-background">
-          <div className="flex items-center gap-4">
-            <h1 className="text-xl font-semibold">{'@' + userProfile?.username || "Unknown User"}</h1>
-          </div>
-          {loggedInUsername ? (
-            <Link href="/logout" prefetch={false} passHref>
-              <Button>로그아웃</Button>
-            </Link>
-          ) : (
-            <Link href="/login" passHref>
-              <Button>로그인</Button>
-            </Link>
-          )}
-        </header>
+        <Header title={'@' + userProfile?.username} loggedInUsername={loggedInUsername} />
 
         <div className="max-w-[640px] mx-auto">
           <ProfileHeader {...userProfile} loggedInUsername={loggedInUsername} />
           
-          <Tabs defaultValue="threads" className="mt-4">
+          <Tabs defaultValue="threads">
             <TabsList className="w-full justify-start h-12 p-0 border-b rounded-none sticky top-14 z-10 bg-background">
               <TabsTrigger
                 value="threads"
