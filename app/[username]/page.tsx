@@ -90,10 +90,10 @@ export default function ProfilePage() {
         <div className="max-w-[640px] mx-auto">
           <ProfileHeader {...userProfile} loggedInUsername={loggedInUsername} />
           
-          <Tabs defaultValue="threads">
+          <Tabs defaultValue="post">
             <TabsList className="w-full justify-start h-12 p-0 border-b rounded-none sticky top-14 z-10 bg-background">
               <TabsTrigger
-                value="threads"
+                value="post"
                 className="flex-1 h-full rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:shadow-none"
               >
                 게시물
@@ -105,7 +105,7 @@ export default function ProfilePage() {
                 갤러리
               </TabsTrigger>
             </TabsList>
-            <TabsContent value="threads" className="mt-0">
+            <TabsContent value="post" className="mt-0">
               <div className="divide-y">
                 {posts.map((post, index) => (
                   <Post
