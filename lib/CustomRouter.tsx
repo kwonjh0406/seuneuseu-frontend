@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { useState, useEffect } from "react"
-import { useAppContext } from "./AppContext"
+import { useAppContext } from "./AppContext"
 
 interface Route {
   path: string
