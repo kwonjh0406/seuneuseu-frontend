@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import axios from "axios"
 import Link from "next/link"
+import useLoggedInUsername from "@/hooks/useLoggedInUsername"
 
 interface CommentType {
   id: string
@@ -49,25 +50,19 @@ interface PostResponse {
 }
 
 export default function PostPage() {
+  const loggedInUsername = useLoggedInUsername();
+
+
+  
   const params = useParams()
   const postId = params.id as string
   const [commentContent, setCommentContent] = useState("")
   const [comments, setComments] = useState<CommentType[]>([])
   const [post, setPost] = useState<PostResponse>(emptyPost)
-  const [loggedInUsername, setLoggedInUsername] = useState<string | null>(null);
+
   const [replyToId, setReplyToId] = useState<string | null>(null);
 
-  useEffect(() => {
-    const checkSession = async () => {
-      try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users/me/username`, {
-          withCredentials: true,
-        });
-        setLoggedInUsername(response.data.username);
-      } catch (error) { }
-    };
-    checkSession();
-  }, []);
+
 
   useEffect(() => {
     const fetchPostAndComments = async () => {

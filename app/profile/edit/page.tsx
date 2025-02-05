@@ -10,8 +10,11 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Camera, ImageIcon, Loader2 } from "lucide-react"
+import useLoggedInUsername from "@/hooks/useLoggedInUsername"
 
 export default function EditProfilePage() {
+  const loggedInUsername = useLoggedInUsername();
+
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [name, setName] = useState("")
@@ -187,42 +190,10 @@ const handleSubmit = async (e: React.FormEvent) => {
     }
   }
 
-  // const handleSubmit = async (e: React.FormEvent) => {
-  //   e.preventDefault()
-
-  //   const formData = new FormData()
-  //   formData.append('username', username)
-  //   formData.append('name', name)
-  //   formData.append('bio', bio)
-
-  //   if (processedImage) {
-  //     formData.append('profileImage', processedImage)
-  //   }
-
-  //   try {
-  //     const response = await axios.patch(
-  //       `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/me/profile`,
-  //       formData,
-  //       {
-  //         withCredentials: true,
-  //         headers: {
-  //           'Content-Type': 'multipart/form-data',
-  //         },
-  //       }
-  //     )
-  //     router.push('/')
-  //   } catch (error) {
-  //     if (axios.isAxiosError(error)) {
-  //       if (error.response) {
-  //         alert(error.response.data.message || "오류가 발생했습니다.")
-  //       }
-  //     }
-  //   }
-  // }
 
   return (
     <div className="flex min-h-screen bg-background">
-      <Sidebar username="username" />
+      <Sidebar username={loggedInUsername} />
       <main className="flex-1 md:ml-[72px] lg:ml-[245px] mb-16 md:mb-0">
         <header className="sticky top-0 z-40 flex items-center justify-between px-4 h-14 border-b bg-background">
           <h1 className="text-xl font-semibold">프로필 편집</h1>

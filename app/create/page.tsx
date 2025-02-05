@@ -8,32 +8,20 @@ import { Textarea } from "@/components/ui/textarea"
 import { ImageIcon } from 'lucide-react'
 import { ImageCarousel } from "@/components/image-carousel"
 import axios from "axios"
+import useLoggedInUsername from "@/hooks/useLoggedInUsername"
 
 export default function CreatePage() {
+  const loggedInUsername = useLoggedInUsername();
+
+
   const router = useRouter()
-  const [loggedInUsername, setLoggedInUsername] = useState<string | null>(null);
+  
   const [content, setContent] = useState("")
   const [imageUrls, setImageUrls] = useState<string[]>([])
   const [processedFiles, setProcessedFiles] = useState<File[]>([])
   const fileInputRef = useRef<HTMLInputElement>(null)
   const maxLength = 500
 
-  useEffect(() => {
-    const checkSession = async () => {
-      try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users/me/username`, {
-          withCredentials: true,
-        });
-        if (response.data.username == null) {
-          router.push("/login");
-        }
-        else {
-          setLoggedInUsername(response.data.username);
-        }
-      } catch (error) { }
-    };
-    checkSession();
-  }, []);
 
   const processImage = async (file: File) => {
     try {

@@ -4,13 +4,12 @@ import { Sidebar } from "@/components/sidebar"
 import { Post } from "@/components/post"
 import { ProfileHeader } from "@/components/profile-header"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Button } from "@/components/ui/button"
 import { useEffect, useState } from "react"
 import axios from "axios"
 import { useParams } from "next/navigation";
-import Link from "next/link";
 import { Gallery } from "@/components/gallery";
 import { Header } from "@/components/header"
+import useLoggedInUsername from "@/hooks/useLoggedInUsername"
 
 interface PostResponseDto {
   postId: number;
@@ -25,26 +24,15 @@ interface PostResponseDto {
 }
 
 export default function ProfilePage() {
+  const loggedInUsername = useLoggedInUsername();
+
+
+
   const { username } = useParams();
 
-  const [loggedInUsername, setLoggedInUsername] = useState<string | null>(null);
+ 
   const [userProfile, setUserProfile] = useState<any | null>(null);
   const [posts, setPosts] = useState<PostResponseDto[]>([]);
-
-  // 로그인 된 사용자의 세션을 조회, 존재한다면 사용자의 user_id 값을 받아옴
-  useEffect(() => {
-    const checkSession = async () => {
-      try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users/me/username`, {
-          withCredentials: true,
-        });
-        setLoggedInUsername(response.data.username);
-      } catch (error) {
-        setLoggedInUsername(null);
-      }
-    };
-    checkSession();
-  }, []);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -91,16 +79,16 @@ export default function ProfilePage() {
           <ProfileHeader {...userProfile} loggedInUsername={loggedInUsername} />
           
           <Tabs defaultValue="post">
-            <TabsList className="w-full justify-start h-12 p-0 border-b rounded-none sticky top-14 z-10 bg-background">
+            <TabsList className="w-full justify-start h-12 p-0 border-b rounded-none sticky top-14 z-10 bg-background/90 backdrop-blur-md">
               <TabsTrigger
                 value="post"
-                className="flex-1 h-full rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:shadow-none"
+                className="!bg-transparent flex-1 h-full rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:shadow-none"
               >
                 게시물
               </TabsTrigger>
               <TabsTrigger
                 value="gallery"
-                className="flex-1 h-full rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:shadow-none"
+                className="!bg-transparent flex-1 h-full rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:shadow-none"
               >
                 갤러리
               </TabsTrigger>

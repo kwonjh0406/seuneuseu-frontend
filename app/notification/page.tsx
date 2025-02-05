@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Header } from "@/components/header"
+import useLoggedInUsername from "@/hooks/useLoggedInUsername"
 
 // Mock data for demonstration
 const mockNotifications = [
@@ -41,28 +42,12 @@ const mockNotifications = [
 ]
 
 export default function NotificationsPage() {
-    const [notifications, setNotifications] = useState(mockNotifications)
+    const loggedInUsername = useLoggedInUsername();
 
-    const [loggedInUsername, setLoggedInUsername] = useState<string | null>(null);
+    const [notifications, setNotifications] = useState(mockNotifications)
     const router = useRouter()
     // 로그인 된 사용자의 세션을 조회, 존재한다면 사용자의 username(아이디)을 받아옴
 
-    useEffect(() => {
-        const checkSession = async () => {
-            try {
-                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users/me/username`, {
-                    withCredentials: true,
-                });
-                if (response.data.username == null) {
-                    router.push("/login");
-                }
-                else {
-                    setLoggedInUsername(response.data.username);
-                }
-            } catch (error) { }
-        };
-        checkSession();
-    }, []);
 
     const handleReadNotification = (id: string) => {
         setNotifications(prevNotifications =>

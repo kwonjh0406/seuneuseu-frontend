@@ -9,34 +9,12 @@ import { Textarea } from "@/components/ui/textarea"
 import { ImageIcon, X, AlertCircle } from 'lucide-react'
 import { ImageCarousel } from "@/components/image-carousel2"
 import axios from "axios"
+import useLoggedInUsername from "@/hooks/useLoggedInUsername"
 
 export default function CreatePage() {
+  const loggedInUsername = useLoggedInUsername();
 
   const { postId } = useParams();
-  const [loggedInUsername, setLoggedInUsername] = useState<string | null>(null);
-
-  // 로그인 된 사용자의 세션을 조회, 존재한다면 사용자의 username(아이디)을 받아옴
-  useEffect(() => {
-    const checkSession = async () => {
-      try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users/me/username`, {
-          withCredentials: true,
-        });
-        if (response.data.username == null) {
-          window.location.href = "/login";
-        }
-        else {
-          setLoggedInUsername(response.data.username);
-        }
-      } catch (error) {
-        setLoggedInUsername(null);
-      }
-    };
-    checkSession();
-  }, []);
-
-
-
   const router = useRouter()
   const [content, setContent] = useState("")
   const [imageUrls, setImageUrls] = useState<string[]>([])

@@ -17,12 +17,14 @@ interface SearchUserResponse {
 }
 
 export default function SearchPage() {
+  const loggedInUsername = useLoggedInUsername();
+  
   const [searchQuery, setSearchQuery] = useState("")
   const [searchResults, setSearchResults] = useState<SearchUserResponse[]>([])  // 타입 지정
   const [allUsers, setAllUsers] = useState<SearchUserResponse[]>([]) // 전체 유저 목록
   const [loading, setLoading] = useState(false)
 
-  const loggedInUsername = useLoggedInUsername();
+  
 
   // 페이지 로딩 시 한 번만 유저 목록을 받아옴
   useEffect(() => {
