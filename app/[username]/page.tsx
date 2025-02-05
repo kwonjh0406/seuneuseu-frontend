@@ -103,7 +103,7 @@ export default function ProfilePage() {
           <ProfileHeader {...userProfile} loggedInUsername={loggedInUsername} />
           
           <Tabs defaultValue="threads" className="mt-4">
-            <TabsList className="w-full justify-start h-12 p-0 border-b rounded-none sticky top-14 z-10 bg-background">
+            <TabsList className="w-full justify-start h-12 p-0 rounded-none sticky top-14 z-10 bg-background">
               <TabsTrigger
                 value="threads"
                 className="flex-1 h-full rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:shadow-none"

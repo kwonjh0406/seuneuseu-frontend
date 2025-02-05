@@ -143,7 +143,7 @@ export default function CreatePage() {
         </header>
 
         <div className="max-w-[640px] mx-auto p-4">
-          <div className="bg-card rounded-lg p-3">
+          <div className="p-3">
             <div className="flex items-start space-x-4">
               <div className="flex-1 min-w-0 space-y-4">
                 <Textarea

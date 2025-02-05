@@ -7,6 +7,7 @@ import axios from "axios"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { Header } from "@/components/header"
 
 // Mock data for demonstration
 const mockNotifications = [
@@ -75,19 +76,7 @@ export default function NotificationsPage() {
         <div className="flex min-h-screen bg-background">
             <Sidebar username={loggedInUsername} />
             <main className="flex-1 md:ml-[72px] lg:ml-[245px] mb-16 md:mb-0">
-                <header className="sticky top-0 z-40 flex items-center justify-between px-4 h-14 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-                    <h1 className="text-xl font-semibold">알림</h1>
-                    {loggedInUsername ? (
-                        <Link href="/logout" prefetch={false} passHref>
-                            <Button>로그아웃</Button>
-                        </Link>
-                    ) : (
-                        <Link href="/login" passHref>
-                            <Button>로그인</Button>
-                        </Link>
-                    )}
-                </header>
-
+                <Header title="알림" loggedInUsername={loggedInUsername} />
                 {/* <div className="max-w-[640px] mx-auto">
                     {notifications.length > 0 ? (
                         <div className="divide-y">

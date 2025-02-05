@@ -14,8 +14,8 @@ body {
 
 @layer base {
   :root {
-    --background: 0 0% 99%;
-    --foreground: 240 10% 3.9%;
+    --background: 0 0% 100%; /*o*/
+    --foreground: 0 0% 0%; /*o*/
     --card: 0 0% 99%;
     --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 99%;
@@ -40,9 +40,10 @@ body {
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
   }
+
   .dark {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
+    --background: 0 0% 6.3%; /*o*/
+    --foreground: 210 20% 96.1%; /*o*/
     --card: 240 10% 3.9%;
     --card-foreground: 0 0% 98%;
     --popover: 240 10% 3.9%;
@@ -72,6 +73,7 @@ body {
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }

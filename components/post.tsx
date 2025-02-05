@@ -55,7 +55,7 @@ export function Post({
   };
 
   return (
-    <div className="relative flex gap-4 p-3 md:px-4 md:py-4 bg-card group hover:bg-accent/5 transition-colors">
+    <div className="relative flex gap-4 p-3 md:px-4 md:py-4 group">
       <div className="relative flex flex-col items-center">
         <Link href={`/${username}`} passHref>
           <Avatar className="h-10 w-10 shrink-0 border bg-background">
