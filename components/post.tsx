@@ -40,19 +40,17 @@ export function Post({
 
   const handleDelete = async () => {
     try {
-      const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${postId}`, {
+      const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/post/${postId}`, {
         withCredentials: true,
       });
-      if (response.status === 204) {
-        window.location.reload();
-      } else {
-        console.error('Failed to delete the post');
-      }
+      window.location.reload()
     } catch (error) {
-      console.error('Error deleting post:', error);
+      setIsDeleteDialogOpen(false);
+      if (axios.isAxiosError(error)) {
+        if (error.response) alert(error.response.data.message)
+      }
     }
-    setIsDeleteDialogOpen(false)
-  };
+  }
 
   return (
     <div className="relative flex gap-4 p-3 md:px-4 md:py-4 group">
@@ -100,9 +98,9 @@ export function Post({
         </div>
 
         <Link href={`/post/${postId}`} passHref>
-        <p className="mt-0.5 text-[0.9375rem] break-all whitespace-pre-wrap">
-          {content}
-        </p>
+          <p className="mt-0.5 text-[0.9375rem] break-all whitespace-pre-wrap">
+            {content}
+          </p>
         </Link>
 
         {imageUrls && imageUrls.length > 0 && (

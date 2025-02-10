@@ -103,7 +103,7 @@ export default function CreatePage() {
       });
 
       await axios.post(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/post`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts`,
         formData,
         {
           withCredentials: true,

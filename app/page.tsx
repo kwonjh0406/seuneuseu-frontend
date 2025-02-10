@@ -51,6 +51,7 @@ export default function Home() {
       setHasMore(newPosts.length > 0); // 데이터가 더 있는지 확인
     } catch (error) {
       console.error("게시글을 불러오는 중 오류 발생:", error);
+      setHasMore(false);
     }
     setIsFetching(false);
   }, [isFetching, hasMore, page]);
