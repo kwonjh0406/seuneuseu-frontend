@@ -23,12 +23,10 @@ jobs:
       - name: Deploy to EC2
         run: |
           ssh ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
-            cd ~/frontend
+            cd ~/seuneuseu-frontend
 
-            sudo rm -rf ./*
-            git clone https://github.com/kwonjh0406/seuneuseu-frontend.git .
+            git pull
 
-            npm install
             npm run build
 
             pm2 stop all
