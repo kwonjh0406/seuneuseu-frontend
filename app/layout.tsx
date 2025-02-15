@@ -2,12 +2,14 @@ import type { Metadata, Viewport } from "next"
 import { Inter } from 'next/font/google'
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
+import Head from "next/head"
 
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "스느스",
   description: "새로운 소통의 시작, 여러분의 생각을 공유하세요",
+  manifest: "/manifest.json",
 }
 
 export const viewport: Viewport = {
