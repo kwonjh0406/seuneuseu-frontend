@@ -1,32 +1,20 @@
-import { MetadataRoute } from "next";
+import { MetadataRoute } from "next"
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "PWA TODO",
-    short_name: "PWA TODO",
-    theme_color: "#f5f5f5",
-    background_color: "#f5f5f5",
+    theme_color: "#8936FF",
+    background_color: "#2EC6FE",
     icons: [
       {
-        src: "icons/192.png",
-        sizes: "192x192",
-        type: "image/png",
-      },
-      {
-        src: "icons/512.png",
-        sizes: "512x512",
-        type: "image/png",
-      },
-      {
-        src: "icons/192.png",
-        sizes: "192x192",
         purpose: "maskable",
+        sizes: "512x512",
+        src: "/icons/512.png",
         type: "image/png",
       },
       {
-        src: "icons/512.png",
+        purpose: "any",
         sizes: "512x512",
-        purpose: "maskable",
+        src: "/icons/512.png",
         type: "image/png",
       },
     ],
@@ -34,6 +22,9 @@ export default function manifest(): MetadataRoute.Manifest {
     display: "standalone",
     dir: "auto",
     lang: "ko-KR",
+    name: "seuneuseu",
+    short_name: "seuneuseu",
     start_url: "/",
-  };
+    scope: "/",
+  }
 }
