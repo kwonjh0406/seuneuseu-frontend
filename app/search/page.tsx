@@ -62,7 +62,7 @@ export default function SearchPage() {
   return (
     <div className="flex min-h-screen bg-background">
       <Sidebar username={loggedInUsername}/>
-      <main className="flex-1 md:ml-[72px] lg:ml-[245px] mb-16 md:mb-0">
+      <main className="flex-1 md:ml-[72px] lg:ml-[245px] mb-24 md:mb-0">
         <Header title="검색" loggedInUsername={loggedInUsername} />
 
         <div className="max-w-[640px] mx-auto px-4 py-4">
