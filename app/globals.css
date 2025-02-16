@@ -10,6 +10,14 @@ html {
   padding-top: env(safe-area-inset-top);
 }
 
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+}
+
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
