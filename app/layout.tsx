@@ -28,7 +28,7 @@ export default function RootLayout({
     <html lang="ko">
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <div className="min-h-screen bg-background sm:pt-14">
+          <div className="min-h-screen bg-background max-sm:pt-14">
             {children}
           </div>
         </ThemeProvider>
