@@ -15,11 +15,11 @@ export function ThemeToggle() {
     const currentTheme = theme === "system" ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light") : theme
     const metaThemeColor = document.querySelector("meta[name='theme-color']")
     if (metaThemeColor) {
-      metaThemeColor.setAttribute("content", currentTheme === "light" ? "#f3f5f7" : "#101010")
+      metaThemeColor.setAttribute("content", currentTheme === "light" ? "#ffffff" : "#101010")
     } else {
       const newMeta = document.createElement("meta")
       newMeta.name = "theme-color"
-      newMeta.content = currentTheme === "light" ? "#f3f5f7" : "#101010"
+      newMeta.content = currentTheme === "light" ? "#ffffff" : "#101010"
       document.head.appendChild(newMeta)
     }
   }, [theme])
