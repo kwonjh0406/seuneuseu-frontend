@@ -6,6 +6,13 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+.container {
+  position: fixed; /* 화면에 고정된 위치에 배치 */
+  width: 100%; /* 전체 화면 너비 */
+  bottom: 0; /* 화면 하단에 배치 */
+  padding-bottom: env(safe-area-inset-bottom); /* 아이폰 하단의 안전한 여백을 추가 */
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;

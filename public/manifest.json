@@ -1,25 +1,25 @@
 {
     "icons": [
-      {
-        "purpose": "maskable",
-        "sizes": "512x512",
-        "src": "/icons/512.png",
-        "type": "image/png"
-      },
-      {
-        "purpose": "any",
-        "sizes": "512x512",
-        "src": "/icons/512.png",
-        "type": "image/png"
-      }
+        {
+            "purpose": "maskable",
+            "sizes": "512x512",
+            "src": "/icons/seuneuseu-icon.png",
+            "type": "image/png"
+        },
+        {
+            "purpose": "any",
+            "sizes": "512x512",
+            "src": "/icons/seuneuseu-icon.png",
+            "type": "image/png"
+        }
     ],
-    "orientation": "any",
-    "display": "fullscreen",
+    "orientation": "portrait",
+    "display": "standalone",
     "dir": "auto",
     "lang": "ko-KR",
-    "name": "seuneuseu",
-    "short_name": "seuneuseu",
+    "name": "스느스",
+    "short_name": "스느스",
     "start_url": "/",
-    "scope": "/"
-  }
-  
+    "scope": "/",
+    "theme_color": "#101010" 
+}

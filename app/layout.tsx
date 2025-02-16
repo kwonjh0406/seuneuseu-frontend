@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next"
 import { Inter } from 'next/font/google'
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
-import Head from "next/head"
 
 const inter = Inter({ subsets: ["latin"] })
 
