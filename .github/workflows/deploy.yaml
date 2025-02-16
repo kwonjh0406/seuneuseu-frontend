@@ -24,7 +24,9 @@ jobs:
         run: |
           ssh ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
             cd ~/seuneuseu-frontend
-
+            
+            git reset --hard HEAD
+            
             git pull
 
             npm run build
