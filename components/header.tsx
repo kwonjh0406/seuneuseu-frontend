@@ -9,7 +9,7 @@ interface HeaderProps {
 
 export const Header = ({ title, loggedInUsername }: HeaderProps) => {
   return (
-    <header className="fixed top-0 left-0 z-40 flex items-center justify-between px-4 h-14 w-full border-b bg-background/90 backdrop-blur-md">
+    <header className="sm:fixed sm:w-full md:sticky top-0 z-40 flex items-center justify-between px-4 h-14 border-b bg-background/90 backdrop-blur-md">
       <h1 className="text-xl font-semibold">{title}</h1>
       <div className="flex items-center space-x-2">
         <ThemeToggle />
