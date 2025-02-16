@@ -93,7 +93,7 @@ export default function ProfilePage() {
                 갤러리
               </TabsTrigger>
             </TabsList>
-            <TabsContent value="post" className="mt-0">
+            <TabsContent value="post" className="mt-0 mb-24">
               <div className="divide-y">
                 {posts.map((post, index) => (
                   <Post
@@ -113,7 +113,7 @@ export default function ProfilePage() {
                 ))}
               </div>
             </TabsContent>
-            <TabsContent value="gallery" className="mt-0">
+            <TabsContent value="gallery" className="mt-0 mb-24">
               <Gallery username={username} />
             </TabsContent>
           </Tabs>
