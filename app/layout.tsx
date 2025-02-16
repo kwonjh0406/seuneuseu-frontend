@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next"
 import { Inter } from 'next/font/google'
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
-import Head from "next/head"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -12,13 +11,13 @@ export const metadata: Metadata = {
   manifest: "/manifest.json",
 }
 
-// export const viewport: Viewport = {
-//   width: "device-width",
-//   initialScale: 1,
-//   maximumScale: 1,
-//   userScalable: false,
-//   viewportFit: "cover",
-// }
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
+}
 
 export default function RootLayout({
   children,
@@ -27,9 +26,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko">
-      <Head>
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
-      </Head>
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <div className="min-h-screen bg-background">
