@@ -23,9 +23,6 @@ jobs:
       - name: Deploy to OCI Instance
         run: |
           ssh ubuntu@${{ secrets.OCI_INSTANCE_IP }} << 'EOF'
-            if [ -f "$HOME/.bashrc" ]; then
-              . "$HOME/.bashrc"
-            fi
             
             cd ~/seuneuseu-frontend
 
