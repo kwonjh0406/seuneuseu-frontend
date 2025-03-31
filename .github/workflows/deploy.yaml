@@ -1,4 +1,4 @@
-name: Next.js to EC2
+name: OCI 배포
 
 on:
   push:
@@ -16,21 +16,19 @@ jobs:
       - name: Install SSH key
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+          echo "${{ secrets.OCI_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 0400 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.OCI_INSTANCE_IP }} >> ~/.ssh/known_hosts
 
       - name: Deploy to EC2
         run: |
-          ssh ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
+          ssh ec2-user@${{ secrets.OCI_INSTANCE_IP }} << 'EOF'
             cd ~/seuneuseu-frontend
-            
-            git reset --hard HEAD
-            
+
             git pull
 
             npm run build
 
-            pm2 stop all
-            pm2 start npm --name "seuneuseu-app" -- start
+            pm2 delete 0
+            pm2 start npm -- start
           EOF
