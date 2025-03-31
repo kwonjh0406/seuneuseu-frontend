@@ -14,9 +14,9 @@ export const Header = ({ title, loggedInUsername }: HeaderProps) => {
       <div className="flex items-center space-x-2">
         <ThemeToggle />
         {loggedInUsername ? (
-          <Link href="/logout" prefetch={false} passHref>
+          <a href="https://api.seuneuseu.com/logout">
             <Button>로그아웃</Button>
-          </Link>
+          </a>
         ) : (
           <Link href="/login" passHref>
             <Button>로그인</Button>
