@@ -20,9 +20,9 @@ jobs:
           chmod 0400 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.OCI_INSTANCE_IP }} >> ~/.ssh/known_hosts
 
-      - name: Deploy to EC2
+      - name: Deploy to OCI Instance
         run: |
-          ssh ec2-user@${{ secrets.OCI_INSTANCE_IP }} << 'EOF'
+          ssh ubuntu@${{ secrets.OCI_INSTANCE_IP }} << 'EOF'
             cd ~/seuneuseu-frontend
 
             git pull
