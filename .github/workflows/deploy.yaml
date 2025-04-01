@@ -25,6 +25,7 @@ jobs:
           ssh ubuntu@${{ secrets.OCI_INSTANCE_IP }} << 'EOF'
             cd ~/seuneuseu-frontend
 
+            git fetch --all
             git reset --hard origin/main
 
             npm run build
