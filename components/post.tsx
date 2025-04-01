@@ -73,8 +73,8 @@ export function Post({
           {loggedInUsername === username && (
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-8 w-8 -mr-2 text-muted-foreground">
-                  <MoreHorizontal className="h-5 w-5" />
+                <Button variant="ghost" size="icon" className="h-5 w-5 text-muted-foreground">
+                  <MoreHorizontal className="h-5 w-5"/>
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-40 p-0">
