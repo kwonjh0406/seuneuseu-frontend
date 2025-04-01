@@ -53,23 +53,16 @@ export function Post({
   }
 
   return (
-    <div className="relative flex gap-4 p-3 md:px-4 md:py-4 group">
-      <div className="relative flex flex-col items-center">
+    <div className="text-[0.9rem] flex gap-4 p-3 md:px-4 md:py-4 group">
         <Link href={`/${username}`} passHref>
-          <Avatar className="h-10 w-10 shrink-0 border bg-background">
+          <Avatar>
             <AvatarImage src={profileImageUrl} />
-            <AvatarFallback>{name[0]}</AvatarFallback>
           </Avatar>
         </Link>
-        {!isLast && (
-          <div className="w-0.5 grow mt-2 bg-accent" />
-        )}
-      </div>
-
       {/* Content column */}
       <div className="flex-1 min-w-0">
-        <div className="flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2 min-w-0">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-1 min-w-0">
             <Link href={`/${username}`} passHref><span className="font-semibold truncate">{name}</span></Link>
             {/* <Link href={`/${username}`} passHref><span className="text-muted-foreground shrink-0">@{username}</span></Link> */}
             <span className="text-muted-foreground">·</span>
@@ -98,7 +91,7 @@ export function Post({
         </div>
 
         <Link href={`/post/${postId}`} passHref>
-          <p className="mt-0.5 text-[0.9375rem] break-all whitespace-pre-wrap">
+          <p className="mt-1.5 break-all whitespace-pre-wrap">
             {content}
           </p>
         </Link>

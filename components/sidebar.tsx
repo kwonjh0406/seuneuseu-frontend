@@ -66,7 +66,7 @@ export function Sidebar({ username }: SidebarProps) {
                 ${pathname === route.href ? "text-primary" : "text-muted-foreground"}
               `}
             >
-              <route.icon className="w-7 h-7" strokeWidth={2} />
+              <route.icon className="w-6 h-6" strokeWidth={2} />
             </Link>
           ))}
         </nav>
