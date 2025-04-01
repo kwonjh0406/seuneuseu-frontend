@@ -170,7 +170,7 @@ export default function PostPage() {
   const commentHierarchy = getCommentHierarchy(comments);
 
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="flex min-h-screen bg-background max-sm:pt-14">
       <Sidebar username={loggedInUsername} />
       <main className="flex-1 md:ml-[72px] lg:ml-[245px] mb-16 md:mb-0">
         <header className="max-sm:fixed sm:sticky w-full top-0 z-40 flex items-center justify-between px-4 h-14 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -196,7 +196,7 @@ export default function PostPage() {
 
           <div className="border-t border-border" />
 
-          <div className="mt-4 mb-12 px-6">
+          <div className="mt-3 mb-12 px-4">
           <h2 className="text-lg font-semibold mb-4">댓글</h2>
             {loggedInUsername && (
               <form onSubmit={handleSubmitComment} className="mb-4">
@@ -225,7 +225,7 @@ export default function PostPage() {
             )}
 
 
-            <div className="space-y-6">
+            <div className="space-y-4">
               {commentHierarchy.map((comment, index) => (
                 <Comment
                   key={comment.id}

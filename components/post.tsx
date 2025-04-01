@@ -53,7 +53,7 @@ export function Post({
   }
 
   return (
-    <div className="text-[0.9rem] flex gap-4 p-3 md:px-4 md:py-4 group">
+    <div className="flex gap-4 p-3 md:px-4 md:py-4 group">
         <Link href={`/${username}`} passHref>
           <Avatar>
             <AvatarImage src={profileImageUrl} />

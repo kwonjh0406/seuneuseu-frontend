@@ -15,18 +15,17 @@ export function UserSearchResult({
   return (
     <Link href={`/${username}`}>
       <div className="flex items-center gap-4 py-4">
-        <Avatar className="h-12 w-12 shrink-0 border bg-background">
+        <Avatar className="h-12 w-12">
           <AvatarImage src={profileImageUrl} />
           <AvatarFallback>
             <img src="https://www.gravatar.com/avatar/?d=mp" />
           </AvatarFallback>
-
         </Avatar>
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-semibold text-sm">{name}</h3>
-              <p className="text-sm text-muted-foreground">@{username}</p>
+              <h3 className="font-semibold">{name}</h3>
+              <p className="text-muted-foreground">@{username}</p>
             </div>
           </div>
         </div>

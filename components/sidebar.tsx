@@ -56,7 +56,7 @@ export function Sidebar({ username }: SidebarProps) {
   if (isMobile) {
     return (
       <div className="fixed bottom-0 left-0 right-0 border-t bg-background/90 backdrop-blur-md z-50" style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
-        <nav className="flex items-center justify-around h-16 px-2 max-w-screen-xl mx-auto">
+        <nav className="flex items-center justify-around h-14 px-2 max-w-screen-xl mx-auto">
           {routes.map((route) => (
             <Link
               key={route.label}

@@ -60,13 +60,13 @@ export default function SearchPage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="flex min-h-screen bg-background max-sm:pt-14">
       <Sidebar username={loggedInUsername}/>
-      <main className="flex-1 md:ml-[72px] lg:ml-[245px] mb-24 md:mb-0">
+      <main className="flex-1 md:ml-[72px] lg:ml-[245px] mb-14 md:mb-0">
         <Header title="검색" loggedInUsername={loggedInUsername} />
 
         <div className="max-w-[640px] mx-auto px-4 py-4">
-          <div className="relative mb-4">
+          <div className="relative mb-2">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
             <Input
               type="text"

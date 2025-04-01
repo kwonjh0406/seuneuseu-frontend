@@ -116,10 +116,10 @@ export default function Home() {
   };
 
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="flex min-h-screen bg-background max-sm:pt-14">
       <Sidebar username={loggedInUsername} />
 
-      <main className="flex-1 md:ml-[72px] lg:ml-[245px] mb-16 md:mb-0">
+      <main className="flex-1 md:ml-[72px] lg:ml-[245px] mb-14 md:mb-0">
         <Header title="홈" loggedInUsername={loggedInUsername} />
 
         <div className="max-w-[640px] mx-auto">
@@ -155,7 +155,7 @@ export default function Home() {
               {renderPosts(posts)}
             </div>
           )}
-          <div ref={observerRef} className="h-10" />
+          <div ref={observerRef}/>
           {isFetching && !isInitialLoading && <PostSkeleton />}
         </div>
       </main>

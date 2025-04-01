@@ -70,7 +70,7 @@ export default function ProfilePage() {
   }, [username]);
 
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="flex min-h-screen bg-background max-sm:pt-14">
       <Sidebar username={loggedInUsername} />
       <main className="flex-1 md:ml-[72px] lg:ml-[245px] mb-16 md:mb-0">
         <Header title={'@' + userProfile?.username} loggedInUsername={loggedInUsername} />

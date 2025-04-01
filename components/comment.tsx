@@ -97,13 +97,12 @@ export function Comment({
     <div className="space-y-4 relative">
       <div className="flex gap-3">
         <Link href={`/${username}`} passHref>
-          <Avatar className="h-10 w-10 shrink-0 border bg-background">
+          <Avatar>
             <AvatarImage src={profileImageUrl} />
-            <AvatarFallback>{username[0]}</AvatarFallback>
           </Avatar>
         </Link>
         <div className="flex-1 space-y-1">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             <Link href={`/${username}`} passHref><span className="font-semibold truncate">{name}</span></Link>
             <span className="text-muted-foreground">·</span>
             <span className="text-sm text-muted-foreground">{timeAgo}</span>
@@ -133,12 +132,12 @@ export function Comment({
       {replyingTo === id && <ReplyForm parentId={id} />}
 
       {replies.length > 0 && (
-        <div className="ml-12 space-y-4">
+        <div className="ml-14 space-y-4">
           {replies.map((reply) => (
             <div key={reply.id} className="space-y-2">
               <div className="flex gap-3">
                 <Link href={`/${reply.username}`} passHref>
-                  <Avatar className="h-8 w-8 shrink-0">
+                  <Avatar className="h-8 w-8">
                     <AvatarImage src={reply.profileImageUrl} />
                     <AvatarFallback>{reply.username[0]}</AvatarFallback>
                   </Avatar>
