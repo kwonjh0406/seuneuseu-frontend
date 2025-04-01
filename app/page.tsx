@@ -155,7 +155,7 @@ export default function Home() {
               {renderPosts(posts)}
             </div>
           )}
-          <div ref={observerRef}/>
+          <div ref={observerRef} className="h-10"/>
           {isFetching && !isInitialLoading && <PostSkeleton />}
         </div>
       </main>
