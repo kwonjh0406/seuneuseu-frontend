@@ -72,7 +72,7 @@ export default function ProfilePage() {
   return (
     <div className="flex min-h-screen bg-background max-sm:pt-14">
       <Sidebar username={loggedInUsername} />
-      <main className="flex-1 md:ml-[72px] lg:ml-[245px] mb-16 md:mb-0">
+      <main className="flex-1 md:ml-[72px] lg:ml-[245px] mb-14 md:mb-0">
         <Header title={'@' + userProfile?.username} loggedInUsername={loggedInUsername} />
 
         <div className="max-w-[640px] mx-auto">
@@ -93,7 +93,7 @@ export default function ProfilePage() {
                 갤러리
               </TabsTrigger>
             </TabsList>
-            <TabsContent value="post" className="mt-0 mb-24">
+            <TabsContent value="post" className="mt-0 mb-10">
               <div className="divide-y">
                 {posts.map((post, index) => (
                   <Post
