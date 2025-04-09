@@ -1,24 +1,24 @@
-import { useState } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
 import { Heart, MessageCircle, UserPlus } from 'lucide-react'
 
 interface NotificationItemProps {
     id: string
-    type: 'like' | 'comment' | 'follow'
+    type: string
     username: string
-    avatar: string
-    content: string
+    profileImageUrl: string
+    message: string
     timeAgo: string
+    postId: number
 }
 
 export function NotificationItem({
     id,
     type,
     username,
-    avatar,
-    content,
+    profileImageUrl,
+    message,
     timeAgo,
+    postId,
 }: NotificationItemProps) {
     const getIcon = () => {
         switch (type) {
@@ -31,23 +31,36 @@ export function NotificationItem({
         }
     }
 
+    const getMessageByType = () => {
+        switch (type) {
+            case 'like':
+                return `${username}님이 회원님의 게시글을 좋아합니다.`
+            case 'COMMENT':
+                return `${username}님이 회원님에게 댓글을 남겼습니다.`
+            case 'follow':
+                return `${username}님이 회원님을 팔로우하기 시작했습니다.`
+            default:
+                return `${username}님의 활동`
+        }
+    }
+
     return (
-        <div
-            className="flex items-start gap-4 p-4"
-        >
+        <div className="flex items-start gap-4 p-4">
             <Avatar className="w-10 h-10">
-                <AvatarImage src={avatar} alt={username} />
-                <AvatarFallback>{username[0]}</AvatarFallback>
+                <AvatarImage src={profileImageUrl} alt={username} />
             </Avatar>
             <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
-                    <span className="font-semibold">{username}</span>
                     {getIcon()}
                     <span className="text-sm text-muted-foreground">{timeAgo}</span>
                 </div>
-                <p className="text-sm">{content}</p>
+                <p className="text-sm">{getMessageByType()}</p>
+                {message && (
+                    <div className="mt-1 px-3 py-2 bg-muted rounded text-sm text-muted-foreground border">
+                        “{message}”
+                    </div>
+                )}
             </div>
         </div>
     )
 }
-

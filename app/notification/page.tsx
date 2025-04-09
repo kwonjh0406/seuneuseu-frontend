@@ -5,49 +5,44 @@ import { Sidebar } from "@/components/sidebar"
 import { NotificationItem } from "@/components/notification-item"
 import axios from "axios"
 import { useRouter } from "next/navigation"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
 import { Header } from "@/components/header"
 import useLoggedInUsername from "@/hooks/useLoggedInUsername"
 
-// Mock data for demonstration
-const mockNotifications = [
-    {
-        id: "1",
-        type: 'like' as const,
-        username: "johndoe",
-        avatar: "/placeholder.svg",
-        content: "liked your thread",
-        timeAgo: "2h",
-        isRead: false,
-    },
-    {
-        id: "2",
-        type: 'comment' as const,
-        username: "janedoe",
-        avatar: "/placeholder.svg",
-        content: "commented on your thread: Great post!",
-        timeAgo: "4h",
-        isRead: true,
-    },
-    {
-        id: "3",
-        type: 'follow' as const,
-        username: "bobsmith",
-        avatar: "/placeholder.svg",
-        content: "started following you",
-        timeAgo: "1d",
-        isRead: false,
-    },
-]
+interface Notification {
+    id: string
+    type: string
+    username: string
+    profileImageUrl: string
+    message: string
+    timeAgo: string
+    postId: number
+    isRead: boolean
+}
 
 export default function NotificationsPage() {
-    const loggedInUsername = useLoggedInUsername();
-
-    const [notifications, setNotifications] = useState(mockNotifications)
+    const loggedInUsername = useLoggedInUsername()
+    const [notifications, setNotifications] = useState<Notification[]>([])
+    const [isLoading, setIsLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null)
     const router = useRouter()
-    // 로그인 된 사용자의 세션을 조회, 존재한다면 사용자의 username(아이디)을 받아옴
 
+    useEffect(() => {
+        const fetchNotifications = async () => {
+            try {
+                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/notifications`, {
+                    withCredentials: true,
+                });
+                setNotifications(response.data.data)
+            } catch (err) {
+                console.error("알림을 불러오는 데 실패했습니다.", err)
+                setError("알림을 불러오는 데 실패했습니다.")
+            } finally {
+                setIsLoading(false)
+            }
+        }
+
+        fetchNotifications()
+    }, [])
 
     const handleReadNotification = (id: string) => {
         setNotifications(prevNotifications =>
@@ -62,8 +57,12 @@ export default function NotificationsPage() {
             <Sidebar username={loggedInUsername} />
             <main className="flex-1 md:ml-[72px] lg:ml-[245px] mb-16 md:mb-0">
                 <Header title="알림" loggedInUsername={loggedInUsername} />
-                {/* <div className="max-w-[640px] mx-auto">
-                    {notifications.length > 0 ? (
+                <div className="max-w-[640px] mx-auto">
+                    {isLoading ? (
+                        <p className="text-center py-10">로딩 중...</p>
+                    ) : error ? (
+                        <p className="text-center text-red-500 py-10">{error}</p>
+                    ) : notifications.length > 0 ? (
                         <div className="divide-y">
                             {notifications.map((notification) => (
                                 <NotificationItem
@@ -74,15 +73,14 @@ export default function NotificationsPage() {
                         </div>
                     ) : (
                         <div className="flex flex-col items-center justify-center h-[calc(100vh-3.5rem)] text-center px-4">
-                            <h2 className="text-2xl font-semibold mb-2">No notifications yet</h2>
+                            <h2 className="text-2xl font-semibold mb-2">알림이 없습니다</h2>
                             <p className="text-muted-foreground">
-                                When you have notifications, they'll show up here.
+                                새로운 활동이 있을 때 여기에 표시됩니다.
                             </p>
                         </div>
                     )}
-                </div> */}
+                </div>
             </main>
         </div>
     )
 }
-
