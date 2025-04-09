@@ -122,7 +122,7 @@ export default function Home() {
       <main className="flex-1 md:ml-[72px] lg:ml-[245px] mb-14 md:mb-0">
         <Header title="홈" loggedInUsername={loggedInUsername} />
 
-        <div className="max-w-[640px] mx-auto">
+        <div className="max-w-[640px] mb-5 mx-auto">
           {loggedInUsername ? (
             <Tabs defaultValue="home">
               <TabsList className="w-full justify-start h-12 p-0 rounded-none sticky border-b top-14 z-10 bg-background/90 backdrop-blur-md">
@@ -155,7 +155,7 @@ export default function Home() {
               {renderPosts(posts)}
             </div>
           )}
-          <div ref={observerRef} className="h-10"/>
+          <div ref={observerRef} className="h-5"/>
           {isFetching && !isInitialLoading && <PostSkeleton />}
         </div>
       </main>
