@@ -9,10 +9,10 @@ import { Textarea } from "@/components/ui/textarea"
 import { ImageIcon, X, AlertCircle } from 'lucide-react'
 import { ImageCarousel } from "@/components/image-carousel2"
 import axios from "axios"
-import useLoggedInUsername from "@/hooks/useLoggedInUsername"
+import { useUsername } from "@/app/ClientLayout"
 
 export default function CreatePage() {
-  const loggedInUsername = useLoggedInUsername();
+  const loggedInUsername = useUsername();
 
   const { postId } = useParams();
   const router = useRouter()

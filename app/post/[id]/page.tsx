@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import axios from "axios"
 import Link from "next/link"
-import useLoggedInUsername from "@/hooks/useLoggedInUsername"
+import { useUsername } from "@/app/ClientLayout"
 
 interface CommentType {
   id: string
@@ -50,7 +50,7 @@ interface PostResponse {
 }
 
 export default function PostPage() {
-  const loggedInUsername = useLoggedInUsername();
+  const loggedInUsername = useUsername();
 
 
   
