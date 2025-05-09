@@ -13,6 +13,7 @@ export async function getLoggedInUsername(): Promise<string | null> {
         Cookie: `JSESSIONID=${jsessionId}`,
       },
       cache: "no-store",
+      credentials: 'include',
     });
 
     if (!res.ok) return null;
