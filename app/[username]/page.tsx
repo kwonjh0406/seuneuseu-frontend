@@ -9,7 +9,7 @@ import axios from "axios"
 import { useParams } from "next/navigation";
 import { Gallery } from "@/components/gallery";
 import { Header } from "@/components/header"
-import useLoggedInUsername from "@/hooks/useLoggedInUsername"
+import { useUsername } from "../ClientLayout"
 
 interface PostResponseDto {
   postId: number;
@@ -24,7 +24,7 @@ interface PostResponseDto {
 }
 
 export default function ProfilePage() {
-  const loggedInUsername = useLoggedInUsername();
+  const loggedInUsername = useUsername();
 
 
 

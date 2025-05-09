@@ -7,7 +7,7 @@ import { UserSearchResult } from "@/components/user-search-result"
 import { Input } from "@/components/ui/input"
 import { Search } from 'lucide-react'
 import { Header } from "@/components/header"
-import useLoggedInUsername from "@/hooks/useLoggedInUsername"
+import { useUsername } from "../ClientLayout"
 
 // 사용자가 반환할 데이터 타입 정의
 interface SearchUserResponse {
@@ -17,7 +17,7 @@ interface SearchUserResponse {
 }
 
 export default function SearchPage() {
-  const loggedInUsername = useLoggedInUsername();
+  const loggedInUsername = useUsername();
   
   const [searchQuery, setSearchQuery] = useState("")
   const [searchResults, setSearchResults] = useState<SearchUserResponse[]>([])  // 타입 지정

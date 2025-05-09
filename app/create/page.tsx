@@ -8,10 +8,11 @@ import { Textarea } from "@/components/ui/textarea"
 import { ImageIcon } from 'lucide-react'
 import { ImageCarousel } from "@/components/image-carousel"
 import axios from "axios"
-import useLoggedInUsername from "@/hooks/useLoggedInUsername"
+import { useUsername } from "../ClientLayout"
+
 
 export default function CreatePage() {
-  const loggedInUsername = useLoggedInUsername();
+  const loggedInUsername = useUsername();
 
 
   const router = useRouter()

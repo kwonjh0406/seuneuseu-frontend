@@ -6,7 +6,7 @@ import { NotificationItem } from "@/components/notification-item"
 import axios from "axios"
 import { useRouter } from "next/navigation"
 import { Header } from "@/components/header"
-import useLoggedInUsername from "@/hooks/useLoggedInUsername"
+import { useUsername } from "../ClientLayout"
 
 interface Notification {
     id: string
@@ -20,7 +20,7 @@ interface Notification {
 }
 
 export default function NotificationsPage() {
-    const loggedInUsername = useLoggedInUsername()
+    const loggedInUsername = useUsername()
     const [notifications, setNotifications] = useState<Notification[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)

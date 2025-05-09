@@ -2,15 +2,13 @@
 
 import { Sidebar } from "@/components/sidebar";
 import { Post } from "@/components/post";
-import { Button } from "@/components/ui/button";
 import { useEffect, useState, useRef, useCallback } from "react";
 import axios from "axios";
-import useLoggedInUsername from "@/hooks/useLoggedInUsername";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { TabsContent } from "@radix-ui/react-tabs";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Header } from "@/components/header";
 import { PostSkeleton } from "@/components/post-skeleton";
+import { useUsername } from "./ClientLayout";
 
 interface PostResponse {
   postId: number;
@@ -25,7 +23,8 @@ interface PostResponse {
 }
 
 export default function Home() {
-  const loggedInUsername = useLoggedInUsername();
+  const loggedInUsername = useUsername();
+
   const [posts, setPosts] = useState<PostResponse[]>([]);
   const [page, setPage] = useState(0);
   const [isFetching, setIsFetching] = useState(false);
