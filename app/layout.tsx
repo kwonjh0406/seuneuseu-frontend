@@ -5,6 +5,9 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { getLoggedInUsername } from "@/lib/getLoggedInUsername"
 import ClientLayout from "./ClientLayout"
 import { AppProviders } from "./AppProviders"
+import { cookies } from "next/headers"
+import { getUser } from "./lib/getUser"
+import { UserProvider } from "./context/UserContext"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -22,23 +25,24 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 }
 
-export default async function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const cookieStore = cookies(); // ✅ 현재 요청의 쿠키
+  const cookie = cookieStore.toString(); // 모든 쿠키를 문자열로 변환
+
+  const user = await getUser(cookie);
+
   const loggedInUsername = await getLoggedInUsername();
 
   return (
     <html lang="ko">
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <ClientLayout loggedInUsername={loggedInUsername}>
+          <UserProvider initialUser={user}>
             <div className="min-h-screen bg-background">
 
-              <AppProviders>{children}</AppProviders>
+              {children}
             </div>
-          </ClientLayout>
+          </UserProvider>
         </ThemeProvider>
       </body>
     </html>
