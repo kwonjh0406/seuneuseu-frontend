@@ -4,6 +4,7 @@ import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { getLoggedInUsername } from "@/lib/getLoggedInUsername"
 import ClientLayout from "./ClientLayout"
+import { AppProviders } from "./AppProviders"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -34,7 +35,8 @@ export default async function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <ClientLayout loggedInUsername={loggedInUsername}>
             <div className="min-h-screen bg-background">
-              {children}
+
+              <AppProviders>{children}</AppProviders>
             </div>
           </ClientLayout>
         </ThemeProvider>

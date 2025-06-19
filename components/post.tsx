@@ -7,6 +7,7 @@ import axios from "axios"
 import { ImageGallery } from "./image-garllery"
 import { useState } from "react"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "./ui/dialog"
+import { useUserStore } from "@/store/useUserStore"
 
 interface PostProps {
   loggedInUsername: string | null
@@ -35,6 +36,7 @@ export function Post({
   replies,
   isLast
 }: PostProps) {
+  const username2 = useUserStore((state) => state.username)
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
 
