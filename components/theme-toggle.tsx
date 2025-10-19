@@ -15,11 +15,11 @@ export function ThemeToggle() {
     const currentTheme = theme === "system" ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light") : theme
     const metaThemeColor = document.querySelector("meta[name='theme-color']")
     if (metaThemeColor) {
-      metaThemeColor.setAttribute("content", currentTheme === "light" ? "#ffffff" : "#101010")
+      metaThemeColor.setAttribute("content", currentTheme === "light" ? "#FAFAFA" : "#131313")
     } else {
       const newMeta = document.createElement("meta")
       newMeta.name = "theme-color"
-      newMeta.content = currentTheme === "light" ? "#ffffff" : "#101010"
+      newMeta.content = currentTheme === "light" ? "#FAFAFA" : "#131313"
       document.head.appendChild(newMeta)
     }
   }, [theme])
@@ -30,11 +30,11 @@ export function ThemeToggle() {
     // theme-color 메타 태그 업데이트
     const metaThemeColor = document.querySelector("meta[name='theme-color']")
     if (metaThemeColor) {
-      metaThemeColor.setAttribute("content", newTheme === "light" ? "#ffffff" : "#000000")
+      metaThemeColor.setAttribute("content", newTheme === "light" ? "#FAFAFA" : "#131313")
     } else {
       const newMeta = document.createElement("meta")
       newMeta.name = "theme-color"
-      newMeta.content = newTheme === "light" ? "#ffffff" : "#000000"
+      newMeta.content = newTheme === "light" ? "#FAFAFA" : "#131313"
       document.head.appendChild(newMeta)
     }
   }

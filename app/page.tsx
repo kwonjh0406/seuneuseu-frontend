@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { Sidebar } from "@/components/sidebar";
 import { Post } from "@/components/post";
@@ -39,9 +39,12 @@ export default function Home() {
 
     setIsFetching(true);
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts?page=${page}&size=10`, {
-        withCredentials: true,
-      });
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts?page=${page}&size=10`,
+        {
+          withCredentials: true,
+        }
+      );
 
       const newPosts = response.data.data;
       setPosts((prev) => [...prev, ...newPosts]);
@@ -63,12 +66,15 @@ export default function Home() {
   useEffect(() => {
     const fetchFollowingPosts = async () => {
       try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users/me/following/posts`, {
-          withCredentials: true,
-        });
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users/me/following/posts`,
+          {
+            withCredentials: true,
+          }
+        );
         setFollowingPosts(response.data.data);
       } catch (error) {
-        console.error('Failed to fetch posts:', error);
+        console.error("Failed to fetch posts:", error);
       }
     };
     if (loggedInUsername) {
@@ -94,7 +100,9 @@ export default function Home() {
 
   const renderPosts = (postsToRender: PostResponse[]) => {
     if (isInitialLoading) {
-      return Array(5).fill(0).map((_, index) => <PostSkeleton key={index} />);
+      return Array(5)
+        .fill(0)
+        .map((_, index) => <PostSkeleton key={index} />);
     }
 
     return postsToRender.map((post, index) => (
@@ -140,22 +148,16 @@ export default function Home() {
                 </TabsTrigger>
               </TabsList>
               <TabsContent value="home" className="mt-0">
-                <div className="divide-y">
-                  {renderPosts(posts)}
-                </div>
+                <div className="divide-y">{renderPosts(posts)}</div>
               </TabsContent>
               <TabsContent value="following" className="mt-0">
-                <div className="divide-y">
-                  {renderPosts(followingPosts)}
-                </div>
+                <div className="divide-y">{renderPosts(followingPosts)}</div>
               </TabsContent>
             </Tabs>
           ) : (
-            <div className="divide-y">
-              {renderPosts(posts)}
-            </div>
+            <div className="divide-y">{renderPosts(posts)}</div>
           )}
-          <div ref={observerRef} className="h-5"/>
+          <div ref={observerRef} className="h-5" />
           {isFetching && !isInitialLoading && <PostSkeleton />}
         </div>
       </main>
