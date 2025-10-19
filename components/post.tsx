@@ -68,7 +68,7 @@ export function Post({
   };
 
   return (
-    <Card className="my-2 mx-2">
+    <Card className="my-2 mx-2 border-none">
       <CardHeader className="p-0">
         <div className="flex">
           <Link href={`/${username}`} className="pl-3 pt-3 flex-1">
@@ -119,7 +119,7 @@ export function Post({
         </Link>
 
         {imageUrls && imageUrls.length > 0 && (
-          <div className="pt-1 pb-1">
+          <div className="pt-1 ">
             <ImageGallery images={imageUrls} />
           </div>
         )}
