@@ -113,19 +113,19 @@ export function Post({
         </div>
       </CardHeader>
 
-      <CardContent className="p-0 pt-2 ">
+      <CardContent className="p-0 pt-1">
         <Link href={`/post/${postId}`} passHref>
-          <p className="px-4 whitespace-pre-wrap">{content}</p>
+          <p className="px-4 pt-1 pb-1 whitespace-pre-wrap">{content}</p>
         </Link>
 
         {imageUrls && imageUrls.length > 0 && (
-          <div className="pt-1 ">
+          <div className="pt-2 pb-1">
             <ImageGallery images={imageUrls} />
           </div>
         )}
       </CardContent>
 
-      <CardFooter className="px-4 pt-3 pb-4">
+      <CardFooter className="px-4 pt-2 pb-4">
         <div className="flex gap-4">
           <button className="flex items-center gap-1 text-muted-foreground hover:text-primary transition-colors">
             <Heart className="w-[1.125rem] h-[1.125rem]" />
