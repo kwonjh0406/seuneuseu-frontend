@@ -32,7 +32,7 @@ export function ImageGallery({ images }: ImageGalleryProps) {
   if (images.length === 0) return null
 
   return (
-    <div className="relative aspect-[4/3] rounded-lg overflow-hidden bg-muted">
+    <div className="relative aspect-[4/3] overflow-hidden bg-muted">
       <Image
         src={images[currentIndex]}
         alt={`Post image ${currentIndex + 1}`}
