@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea"
 import axios from "axios"
 import Link from "next/link"
 import useLoggedInUsername from "@/hooks/useLoggedInUsername"
+import { usePageScrollRestore } from "@/hooks/usePageScrollRestore"
 
 interface CommentType {
   id: string
@@ -51,6 +52,7 @@ interface PostResponse {
 
 export default function PostPage() {
   const loggedInUsername = useLoggedInUsername();
+  // usePageScrollRestore(); // 임시 비활성화
 
 
   
@@ -116,10 +118,27 @@ export default function PostPage() {
         },
         { withCredentials: true }
       );
-      window.location.reload();
+      
+      // 댓글 목록 새로고침
+      const commentsResponse = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${postId}/comments`);
+      const transformedComments = commentsResponse.data.data.map((comment: any) => ({
+        ...comment,
+        parentId: comment.parentId || null,
+        replies: []
+      }));
+      setComments(transformedComments);
+      setCommentContent("");
+      setReplyToId(null);
+      
+      // 게시물 정보 업데이트 (댓글 수)
+      const postResponse = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${postId}`);
+      setPost(postResponse.data.data);
 
     } catch (error) {
       console.error("Error submitting comment:", error);
+      if (axios.isAxiosError(error) && error.response) {
+        alert(error.response.data.message || "댓글 작성에 실패했습니다.");
+      }
     }
   }
 
@@ -134,25 +153,24 @@ export default function PostPage() {
         },
         { withCredentials: true }
       );
-      window.location.reload();
-
-      const newReply = {
-        ...response.data.data,
-        parentId: commentId,
+      
+      // 댓글 목록 새로고침
+      const commentsResponse = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${postId}/comments`);
+      const transformedComments = commentsResponse.data.data.map((comment: any) => ({
+        ...comment,
+        parentId: comment.parentId || null,
         replies: []
-      };
-
-      setComments(prev => prev.map(comment => {
-        if (comment.id === commentId) {
-          return {
-            ...comment,
-            replies: [...(comment.replies || []), newReply]
-          };
-        }
-        return comment;
       }));
+      setComments(transformedComments);
+      
+      // 게시물 정보 업데이트 (댓글 수)
+      const postResponse = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${postId}`);
+      setPost(postResponse.data.data);
     } catch (error) {
       console.error("Failed to submit reply:", error);
+      if (axios.isAxiosError(error) && error.response) {
+        alert(error.response.data.message || "답글 작성에 실패했습니다.");
+      }
     }
   };
 
@@ -161,9 +179,24 @@ export default function PostPage() {
       await axios.delete(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${postId}/comments/${commentId}`, {
         withCredentials: true,
       })
-      window.location.reload();
+      
+      // 댓글 목록 새로고침
+      const commentsResponse = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${postId}/comments`);
+      const transformedComments = commentsResponse.data.data.map((comment: any) => ({
+        ...comment,
+        parentId: comment.parentId || null,
+        replies: []
+      }));
+      setComments(transformedComments);
+      
+      // 게시물 정보 업데이트 (댓글 수)
+      const postResponse = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${postId}`);
+      setPost(postResponse.data.data);
     } catch (error) {
       console.error("Failed to delete comment:", error)
+      if (axios.isAxiosError(error) && error.response) {
+        alert(error.response.data.message || "댓글 삭제에 실패했습니다.");
+      }
     }
   }
 

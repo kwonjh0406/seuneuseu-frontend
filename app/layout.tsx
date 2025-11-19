@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
+import { AppProvider } from "@/lib/AppContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -33,7 +34,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className="min-h-screen bg-background">{children}</div>
+          <AppProvider>
+            <div className="min-h-screen bg-background">{children}</div>
+          </AppProvider>
         </ThemeProvider>
       </body>
     </html>

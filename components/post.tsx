@@ -52,17 +52,27 @@ export function Post({
 
   const handleDelete = async () => {
     try {
-      const response = await axios.delete(
+      await axios.delete(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${postId}`,
         {
           withCredentials: true,
         }
       );
-      window.location.reload();
+      setIsDeleteDialogOpen(false);
+      // 페이지 새로고침 대신 이전 페이지로 이동
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.location.href = '/';
+      }
     } catch (error) {
       setIsDeleteDialogOpen(false);
       if (axios.isAxiosError(error)) {
-        if (error.response) alert(error.response.data.message);
+        if (error.response) {
+          alert(error.response.data.message || "게시글 삭제에 실패했습니다.");
+        } else {
+          alert("게시글 삭제에 실패했습니다.");
+        }
       }
     }
   };

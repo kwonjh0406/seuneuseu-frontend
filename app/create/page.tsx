@@ -115,7 +115,15 @@ export default function CreatePage() {
       router.push("/");
     } catch (error) {
       console.error("게시글 작성 실패:", error);
-      alert("게시글 작성에 실패했습니다.");
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          alert(error.response.data.message || "게시글 작성에 실패했습니다.");
+        } else {
+          alert("네트워크 오류가 발생했습니다. 다시 시도해주세요.");
+        }
+      } else {
+        alert("게시글 작성에 실패했습니다.");
+      }
     }
   };
 
