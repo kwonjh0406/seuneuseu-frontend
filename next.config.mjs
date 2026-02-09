@@ -2,6 +2,7 @@ import withPWAInit from '@ducanh2912/next-pwa';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'standalone',
   images: {
     domains: ['seuneuseu.s3.ap-northeast-2.amazonaws.com'], // 허용할 외부 이미지 호스트 추가
   },
