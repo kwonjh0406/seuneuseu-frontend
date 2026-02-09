@@ -1,0 +1,57 @@
+name: Next.js CI/CD to ECR
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      # 1. AWS 자격 증명 설정 (OIDC 사용 권장 또는 IAM 사용자 키)
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2 # 서울 리전
+
+      # 2. AWS ECR 로그인
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      # 3. Docker 이미지 빌드 및 ECR Push
+      - name: Build, tag, and push image to Amazon ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: my-nextjs-app # ECR 리포지토리 이름
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+      # 4. [핵심] Config Repo 업데이트
+      - name: Update Config Repo
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: my-nextjs-app
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          # Config Repo 클론 (접근 권한을 위해 PAT 사용)
+          git clone https://x-access-token:${{ secrets.GH_PAT }}@github.com/${{ github.repository_owner }}/seuneuseu-frontend-manifests.git
+          cd seuneuseu-frontend-manifests
+          
+          # kustomize로 이미지 주소 전체를 업데이트
+          cd overlays/dev
+          kustomize edit set image my-nextjs-image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          
+          # 변경 사항 커밋 및 푸시
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
+          git commit -am "Update image to ECR $IMAGE_TAG"
+          git push
